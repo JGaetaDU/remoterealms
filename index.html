@@ -7,16 +7,12 @@
   <style>
     :root {
       --bg: #091224;
-      --bg-2: #0f1c35;
       --panel: rgba(10, 20, 40, 0.92);
-      --panel-2: rgba(14, 28, 53, 0.98);
       --text: #eef3ff;
       --muted: #b8c3dd;
       --border: rgba(122, 145, 191, 0.25);
       --accent: #8b5cf6;
       --accent-soft: rgba(139, 92, 246, 0.18);
-      --success: #22c55e;
-      --warning: #ef4444;
       --shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
     }
 
@@ -38,8 +34,7 @@
       margin: 24px auto 48px;
     }
 
-    .hero,
-    .card {
+    .hero, .card {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 24px;
@@ -56,7 +51,6 @@
     h2 { font-size: 1.6rem; }
     h3 { font-size: 1.05rem; }
     p { margin: 0 0 12px; color: var(--muted); }
-    .muted { color: var(--muted); }
     .small { font-size: 0.92rem; color: var(--muted); }
 
     .pill-row {
@@ -94,6 +88,10 @@
       font-weight: 700;
       cursor: pointer;
       transition: 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .tab-button:hover { transform: translateY(-1px); }
@@ -118,7 +116,6 @@
     }
 
     .half { grid-column: span 6; }
-    .third { grid-column: span 4; }
 
     .field-grid {
       display: grid;
@@ -148,7 +145,7 @@
       font-size: 1rem;
     }
 
-    input:focus, select:focus, button:focus {
+    input:focus, select:focus, button:focus, a:focus {
       outline: 3px solid rgba(139, 92, 246, 0.22);
       outline-offset: 2px;
     }
@@ -203,7 +200,7 @@
     }
 
     .result-value {
-      font-size: clamp(1.35rem, 2vw, 2rem);
+      font-size: clamp(1.1rem, 2vw, 1.9rem);
       font-weight: 700;
       word-break: break-word;
     }
@@ -233,8 +230,6 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 12px;
-      overflow: hidden;
-      border-radius: 16px;
       table-layout: fixed;
     }
 
@@ -310,7 +305,7 @@
     }
 
     @media (max-width: 980px) {
-      .half, .third { grid-column: span 12; }
+      .half { grid-column: span 12; }
       .field-grid, .results, .stats-row { grid-template-columns: 1fr; }
     }
   </style>
@@ -346,67 +341,49 @@
       <button class="tab-button" data-tab="farming-calculator-panel">Farming Calculator</button>
       <button class="tab-button" data-tab="xp-data-panel">XP Data</button>
       <button class="tab-button" data-tab="farming-data-panel">Farming Data</button>
-      <button class="tab-button" data-tab="data-notes-panel">Data Notes</button>
+      <button class="tab-button" data-tab="data-notes-panel">Project Notes</button>
+      <button class="tab-button" data-tab="feedback-panel">Feedback</button>
     </nav>
 
     <section id="xp-calculator-panel" class="tab-panel active">
       <div class="grid">
         <article class="card half">
           <h2>XP Calculator</h2>
-          <p>Estimate XP needed between your selected current level and target level using the full level 1–99 dataset.</p>
-
+          <p>Estimate remaining XP using the number players actually know in game: total current XP.</p>
           <div class="field-grid">
             <div class="field">
-              <label for="xpStartLevel">Current Level</label>
-              <input id="xpStartLevel" type="number" min="1" max="99" value="1" />
+              <label for="xpCurrentTotal">Current Total XP</label>
+              <input id="xpCurrentTotal" type="number" min="0" value="0" />
             </div>
             <div class="field">
               <label for="xpTargetLevel">Target Level</label>
               <input id="xpTargetLevel" type="number" min="1" max="99" value="10" />
             </div>
-            <div class="field">
-              <label for="xpCurrentWithinLevel">Current XP Within Current Level</label>
-              <input id="xpCurrentWithinLevel" type="number" min="0" value="0" />
-            </div>
-            <div class="field">
-              <label for="xpOverflowMode">When Current XP Exceeds Level Range</label>
-              <select id="xpOverflowMode">
-                <option value="cap">Cap value to this level range</option>
-                <option value="warn">Warn only</option>
-              </select>
-            </div>
           </div>
-
           <div class="controls">
             <button class="action" id="xpCalculateButton">Calculate XP</button>
             <button class="secondary" id="xpResetButton" type="button">Reset</button>
           </div>
-
           <div id="xpMessage" class="message" role="alert"></div>
-
           <div class="results" aria-live="polite">
             <div class="result-box">
-              <span class="result-label">Start Level Total XP</span>
-              <div id="xpStartTotalResult" class="result-value">0</div>
+              <span class="result-label">Detected Current Level</span>
+              <div id="xpDetectedLevelResult" class="result-value">1</div>
             </div>
             <div class="result-box">
               <span class="result-label">Target Level Total XP</span>
               <div id="xpTargetTotalResult" class="result-value">0</div>
             </div>
             <div class="result-box">
-              <span class="result-label">XP Needed For Full Goal</span>
-              <div id="xpRequiredResult" class="result-value">0</div>
-            </div>
-            <div class="result-box">
-              <span class="result-label">Remaining XP After Current Progress</span>
+              <span class="result-label">Remaining XP</span>
               <div id="xpRemainingResult" class="result-value">0</div>
             </div>
+            <div class="result-box">
+              <span class="result-label">XP Into Current Level</span>
+              <div id="xpIntoLevelResult" class="result-value">0</div>
+            </div>
           </div>
-
-          <p class="small" style="margin-top: 14px;">
-            <strong>How this works:</strong> the calculator uses the cumulative XP value attached to each level in your dataset.
-            <strong>Current XP Within Current Level</strong> means XP earned after reaching the selected current level baseline.
-          </p>
+          <p class="small" style="margin-top: 14px;">Enter your current <strong>total XP</strong> and the calculator will determine your current level automatically using the XP table.</p>
         </article>
 
         <article class="card half">
@@ -416,46 +393,17 @@
               <tr><th>Item</th><th>Meaning</th></tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Start Level Total XP</td>
-                <td>The cumulative XP required to be at the selected current level.</td>
-              </tr>
-              <tr>
-                <td>Target Level Total XP</td>
-                <td>The cumulative XP required to reach the selected target level.</td>
-              </tr>
-              <tr>
-                <td>XP Needed For Full Goal</td>
-                <td><code>target total XP - start total XP</code></td>
-              </tr>
-              <tr>
-                <td>Remaining XP</td>
-                <td><code>full goal XP - current XP within current level</code>, never below zero.</td>
-              </tr>
+              <tr><td>Detected Current Level</td><td>The highest level whose cumulative XP requirement is less than or equal to your current total XP.</td></tr>
+              <tr><td>Remaining XP</td><td><code>target level total XP - current total XP</code>, never below zero.</td></tr>
+              <tr><td>XP Into Current Level</td><td><code>current total XP - current level baseline XP</code></td></tr>
             </tbody>
           </table>
-
-          <div class="success-box">
-            This calculator uses the full XP progression table for levels 1–99.
-          </div>
-
+          <div class="success-box">This version follows player feedback by using total XP instead of asking for XP within a level range.</div>
           <div class="stats-row">
-            <div class="stat">
-              <span class="label">Levels in dataset</span>
-              <div class="value" id="xpStatLevels">99</div>
-            </div>
-            <div class="stat">
-              <span class="label">Level cap</span>
-              <div class="value">99</div>
-            </div>
-            <div class="stat">
-              <span class="label">First level total XP</span>
-              <div class="value">0</div>
-            </div>
-            <div class="stat">
-              <span class="label">Level 99 total XP</span>
-              <div class="value" id="xpStatCapXp">15,233,507</div>
-            </div>
+            <div class="stat"><span class="label">Levels in dataset</span><div class="value" id="xpStatLevels">99</div></div>
+            <div class="stat"><span class="label">Level cap</span><div class="value">99</div></div>
+            <div class="stat"><span class="label">First level total XP</span><div class="value">0</div></div>
+            <div class="stat"><span class="label">Level 99 total XP</span><div class="value" id="xpStatCapXp">15,233,507</div></div>
           </div>
         </article>
       </div>
@@ -466,19 +414,14 @@
         <article class="card half">
           <h2>Farming Calculator</h2>
           <p>Calculate farming progression using your real crop table, including patch type and seeds to plant.</p>
-
           <div class="field-grid">
             <div class="field">
-              <label for="farmStartLevel">Current Farming Level</label>
-              <input id="farmStartLevel" type="number" min="1" max="99" value="1" />
+              <label for="farmCurrentTotalXP">Current Total Farming XP</label>
+              <input id="farmCurrentTotalXP" type="number" min="0" value="0" />
             </div>
             <div class="field">
               <label for="farmTargetLevel">Target Farming Level</label>
               <input id="farmTargetLevel" type="number" min="1" max="99" value="10" />
-            </div>
-            <div class="field">
-              <label for="farmCurrentWithinLevel">Current XP Within Current Farming Level</label>
-              <input id="farmCurrentWithinLevel" type="number" min="0" value="0" />
             </div>
             <div class="field">
               <label for="farmPlotsPerRun">Plots Per Farming Run</label>
@@ -488,8 +431,11 @@
               <label for="farmSortMode">Crop Sort</label>
               <select id="farmSortMode">
                 <option value="level">Level unlock</option>
-                <option value="alpha">Alphabetical</option>
+                <option value="alpha-asc">A to Z</option>
+                <option value="alpha-desc">Z to A</option>
                 <option value="patch">Patch type then level</option>
+                <option value="xp-desc">Highest XP per cycle</option>
+                
               </select>
             </div>
             <div class="field">
@@ -497,53 +443,28 @@
               <select id="farmCropSelect"></select>
             </div>
           </div>
-
           <div class="controls">
             <button class="action" id="farmCalculateButton">Calculate Farming</button>
             <button class="secondary" id="farmResetButton" type="button">Reset</button>
           </div>
-
           <div id="farmMessage" class="message" role="alert"></div>
-
           <div class="results" aria-live="polite">
-            <div class="result-box">
-              <span class="result-label">XP Remaining</span>
-              <div id="farmRemainingXpResult" class="result-value">0</div>
-            </div>
-            <div class="result-box">
-              <span class="result-label">XP Per Plot / Cycle</span>
-              <div id="farmCycleXpResult" class="result-value">0</div>
-            </div>
-            <div class="result-box">
-              <span class="result-label">Plots Needed</span>
-              <div id="farmPlotsNeededResult" class="result-value">0</div>
-            </div>
-            <div class="result-box">
-              <span class="result-label">Runs Needed</span>
-              <div id="farmRunsNeededResult" class="result-value">0</div>
-            </div>
-            <div class="result-box">
-              <span class="result-label">Seeds Needed</span>
-              <div id="farmSeedsNeededResult" class="result-value">0</div>
-            </div>
-            <div class="result-box">
-              <span class="result-label">Growth Time</span>
-              <div id="farmGrowthTimeResult" class="result-value">-</div>
-            </div>
+            <div class="result-box"><span class="result-label">Detected Farming Level</span><div id="farmDetectedLevelResult" class="result-value">1</div></div>
+            <div class="result-box"><span class="result-label">XP Remaining</span><div id="farmRemainingXpResult" class="result-value">0</div></div>
+            <div class="result-box"><span class="result-label">XP Per Plot / Cycle</span><div id="farmCycleXpResult" class="result-value">0</div></div>
+            <div class="result-box"><span class="result-label">Plots Needed</span><div id="farmPlotsNeededResult" class="result-value">0</div></div>
+            <div class="result-box"><span class="result-label">Runs Needed</span><div id="farmRunsNeededResult" class="result-value">0</div></div>
+            <div class="result-box"><span class="result-label">Seeds Needed</span><div id="farmSeedsNeededResult" class="result-value">0</div></div>
+            <div class="result-box"><span class="result-label">Growth Time</span><div id="farmGrowthTimeResult" class="result-value">-</div></div>
+            <div class="result-box"><span class="result-label">Harvest Assumption</span><div id="farmHarvestAssumptionResult" class="result-value" style="font-size:1rem;">Plant XP + Harvest XP</div></div>
           </div>
-
-          <p class="small" style="margin-top: 14px;">
-            <strong>Current assumption:</strong> <code>XP per plot / cycle = Plant XP + Harvest XP</code>. This version does not include compost,
-            watering bonuses, or other mechanics still under testing.
-          </p>
+          <p class="small" style="margin-top: 14px;"><strong>Current assumption:</strong> <code>XP per plot / cycle = Plant XP + Harvest XP</code>. This version does not include compost or other mechanics still under testing.</p>
         </article>
 
         <article class="card half">
           <h2>Selected Crop Details</h2>
           <table>
-            <thead>
-              <tr><th>Field</th><th>Value</th></tr>
-            </thead>
+            <thead><tr><th>Field</th><th>Value</th></tr></thead>
             <tbody>
               <tr><td>Crop</td><td id="detailCrop">-</td></tr>
               <tr><td>Patch Type</td><td id="detailPatchType">-</td></tr>
@@ -552,31 +473,16 @@
               <tr><td>Plant XP</td><td id="detailPlantXP">-</td></tr>
               <tr><td>Harvest XP</td><td id="detailHarvestXP">-</td></tr>
               <tr><td>XP Per Plot / Cycle</td><td id="detailCycleXP">-</td></tr>
+              <tr><td>Harvest Assumption</td><td id="detailHarvestAssumption">Plant XP + Harvest XP</td></tr>
               <tr><td>Growth Time</td><td id="detailGrowthTime">-</td></tr>
             </tbody>
           </table>
-
-          <div class="success-box">
-            Compost is still intentionally excluded. Your community testing is valuable, but it is not stable enough yet for reliable public calculation.
-          </div>
-
+          <div class="success-box">Compost is still intentionally excluded. It can be added later once the values are stable enough to model confidently.</div>
           <div class="stats-row">
-            <div class="stat">
-              <span class="label">Farming records</span>
-              <div class="value" id="farmStatRecords">28</div>
-            </div>
-            <div class="stat">
-              <span class="label">Patch types</span>
-              <div class="value" id="farmStatPatchTypes">6</div>
-            </div>
-            <div class="stat">
-              <span class="label">Lowest crop level</span>
-              <div class="value" id="farmStatMinLevel">1</div>
-            </div>
-            <div class="stat">
-              <span class="label">Highest crop level</span>
-              <div class="value" id="farmStatMaxLevel">71</div>
-            </div>
+            <div class="stat"><span class="label">Farming records</span><div class="value" id="farmStatRecords">28</div></div>
+            <div class="stat"><span class="label">Patch types</span><div class="value" id="farmStatPatchTypes">6</div></div>
+            <div class="stat"><span class="label">Lowest crop level</span><div class="value" id="farmStatMinLevel">1</div></div>
+            <div class="stat"><span class="label">Highest crop level</span><div class="value" id="farmStatMaxLevel">71</div></div>
           </div>
         </article>
       </div>
@@ -587,23 +493,10 @@
         <article class="card">
           <h2>XP Data Table</h2>
           <p>Browse the full Remote Realms XP progression table used by the calculator.</p>
-
-          <div class="table-controls">
-            <div class="field">
-              <label for="xpSearch">Search by Level</label>
-              <input id="xpSearch" type="text" placeholder="Example: 50" />
-            </div>
-          </div>
-
+          <div class="table-controls"><div class="field"><label for="xpSearch">Search by Level</label><input id="xpSearch" type="text" placeholder="Example: 50" /></div></div>
           <div class="scroll-table">
             <table>
-              <thead>
-                <tr>
-                  <th>Level</th>
-                  <th>Total XP</th>
-                  <th>XP to Next Level</th>
-                </tr>
-              </thead>
+              <thead><tr><th>Level</th><th>Total XP</th><th>XP to Next Level</th></tr></thead>
               <tbody id="xpTableBody"></tbody>
             </table>
           </div>
@@ -616,32 +509,13 @@
         <article class="card">
           <h2>Farming Data Table</h2>
           <p>Browse the crop records powering the farming calculator.</p>
-
           <div class="table-controls">
-            <div class="field">
-              <label for="farmingSearch">Search Crops</label>
-              <input id="farmingSearch" type="text" placeholder="Example: tomato" />
-            </div>
-            <div class="field">
-              <label for="farmingPatchFilter">Filter by Patch Type</label>
-              <select id="farmingPatchFilter"></select>
-            </div>
+            <div class="field"><label for="farmingSearch">Search Crops</label><input id="farmingSearch" type="text" placeholder="Example: tomato" /></div>
+            <div class="field"><label for="farmingPatchFilter">Filter by Patch Type</label><select id="farmingPatchFilter"></select></div>
           </div>
-
           <div class="scroll-table">
             <table>
-              <thead>
-                <tr>
-                  <th>Patch Type</th>
-                  <th>Crop</th>
-                  <th>Level Req</th>
-                  <th>Seeds to Plant</th>
-                  <th>Plant XP</th>
-                  <th>Harvest XP</th>
-                  <th>XP Per Cycle</th>
-                  <th>Growth Time</th>
-                </tr>
-              </thead>
+              <thead><tr><th>Patch Type</th><th>Crop</th><th>Level Req</th><th>Seeds to Plant</th><th>Plant XP</th><th>Harvest XP</th><th>XP Per Cycle</th><th>Growth Time</th></tr></thead>
               <tbody id="farmingTableBody"></tbody>
             </table>
           </div>
@@ -653,37 +527,46 @@
       <div class="grid">
         <article class="card">
           <h2>Community Notes and Development Process</h2>
-          <p>This section documents how the calculator was developed alongside player feedback from the Remote Realms community. Rather than only listing raw dataset details, these notes capture how the tool evolved through testing and discussion.</p>
-
+          <p>This section documents how the calculator evolved through spreadsheet testing, player review, and website revisions.</p>
           <h3>Community testing</h3>
           <ul class="notice-list">
             <li>The calculator began as a spreadsheet used to test farming XP progression and crop efficiency.</li>
-            <li>Players reviewed early calculations and helped confirm values such as plant XP, harvest XP, and seeds required.</li>
-            <li>Several iterations of the calculator were shared so players could test whether the outputs matched their in‑game experience.</li>
-            <li>Feedback from testers helped identify confusing inputs, missing crops, and areas where the layout needed to be clearer.</li>
+            <li>Players reviewed early calculations and helped confirm crop values, seeds required, and interface clarity.</li>
+            <li>Player feedback led to replacing the original XP input structure with a simpler total XP model that matches what players see in game.</li>
+            <li>Multiple versions of the tool were shared so players could compare results against their own in-game progress.</li>
           </ul>
-
           <h3>Design decisions</h3>
           <ul class="notice-list">
-            <li>The site keeps the calculator simple so players can quickly estimate farming progression during gameplay.</li>
-            <li>Crop sorting by level was added because players typically choose crops based on their current farming level.</li>
-            <li>Seed estimates and run calculations were added after players requested a clearer way to plan farming runs.</li>
-            <li>Dataset tables were included as separate tabs so players can view the underlying values used by the calculator.</li>
+            <li>The XP calculator now uses current total XP instead of XP within a level range.</li>
+            <li>Crop sorting includes level unlock, alphabetical order, patch grouping, XP value, and growth-time views.</li>
+            <li>Dataset tables are visible as tabs so players can inspect the values behind the calculator.</li>
+            <li>Harvest assumptions are shown directly in the farming calculator to make the results easier to interpret.</li>
           </ul>
-
           <h3>Current limitations</h3>
           <ul class="notice-list">
             <li>Some crops still have incomplete XP values while testing continues.</li>
             <li>Compost and other modifiers are intentionally excluded until consistent values can be verified.</li>
-            <li>The calculator focuses on planning estimates rather than exact simulation of all in‑game mechanics.</li>
+            <li>The calculator is built for planning and comparison, not full simulation of every farming mechanic.</li>
           </ul>
-
           <h3>Ongoing development</h3>
           <ul class="notice-list">
-            <li>The tool will continue to evolve as players test new mechanics and provide additional feedback.</li>
-            <li>Future updates may separate datasets into external files to make updates easier when the game changes.</li>
-            <li>As more values are confirmed, the calculator can expand to include additional farming mechanics.</li>
+            <li>The tool will continue to evolve as players test new mechanics and provide feedback.</li>
+            <li>Future versions may separate the datasets into external files for easier updating when the game changes.</li>
+            <li>Additional features can be added after the academic project is complete and the current core resource is stable.</li>
           </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="feedback-panel" class="tab-panel">
+      <div class="grid">
+        <article class="card">
+          <h2>Feedback</h2>
+          <p>This calculator is still evolving based on player testing. If you notice an issue, have a suggestion, or want to help improve the tool, use the feedback form below.</p>
+          <div class="controls">
+            <a class="tab-button" href="https://docs.google.com/forms/d/e/1FAIpQLSd7U6MPq9_xfKLUjgI72liim91SXfN-97IDRlww6m7OsmfUGA/viewform?usp=sharing&ouid=115607868251096227258" target="_blank" rel="noopener noreferrer">Submit Feedback Form</a>
+          </div>
+          <p class="small" style="margin-top:14px;">Submissions are optional and used only to improve the calculator and related data tables.</p>
         </article>
       </div>
     </section>
@@ -711,20 +594,24 @@
       return levelMap.get(Number(level));
     }
 
-    function getMaxXPWithinLevel(level) {
-      const row = getXPRow(level);
-      return row ? safeNumber(row.xpToNext, 0) : 0;
+    function getLevelFromTotalXP(totalXP) {
+      let current = xpData[0];
+      for (const row of xpData) {
+        if (row.totalXP <= totalXP) current = row;
+        else break;
+      }
+      return current;
     }
 
+    
     function getSortedCrops(mode) {
       const list = [...farmingData];
-      if (mode === 'alpha') {
-        list.sort((a, b) => a.crop.localeCompare(b.crop));
-      } else if (mode === 'patch') {
-        list.sort((a, b) => a.patchType.localeCompare(b.patchType) || a.levelRequirement - b.levelRequirement || a.crop.localeCompare(b.crop));
-      } else {
-        list.sort((a, b) => a.levelRequirement - b.levelRequirement || a.crop.localeCompare(b.crop));
-      }
+      if (mode === 'alpha-asc') list.sort((a, b) => a.crop.localeCompare(b.crop));
+      else if (mode === 'alpha-desc') list.sort((a, b) => b.crop.localeCompare(a.crop));
+      else if (mode === 'patch') list.sort((a, b) => a.patchType.localeCompare(b.patchType) || a.levelRequirement - b.levelRequirement || a.crop.localeCompare(b.crop));
+      else if (mode === 'xp-desc') list.sort((a, b) => safeNumber(b.xpPerCycle, -1) - safeNumber(a.xpPerCycle, -1) || a.crop.localeCompare(b.crop));
+      
+      else list.sort((a, b) => a.levelRequirement - b.levelRequirement || a.crop.localeCompare(b.crop));
       return list;
     }
 
@@ -737,18 +624,13 @@
       const previous = select.value;
       const sorted = getSortedCrops(byId('farmSortMode').value);
       select.innerHTML = '';
-
       sorted.forEach((crop) => {
         const option = document.createElement('option');
         option.value = crop.crop;
         option.textContent = `${crop.crop} (${crop.patchType}, Lvl ${crop.levelRequirement})`;
         select.appendChild(option);
       });
-
-      if (sorted.some((crop) => crop.crop === previous)) {
-        select.value = previous;
-      }
-
+      if (sorted.some((crop) => crop.crop === previous)) select.value = previous;
       updateSelectedCropDetails();
     }
 
@@ -761,125 +643,86 @@
       byId('detailPlantXP').textContent = crop?.plantXP ?? 'Missing';
       byId('detailHarvestXP').textContent = crop?.harvestXP ?? 'Missing';
       byId('detailCycleXP').textContent = crop?.xpPerCycle ?? 'Missing';
+      byId('detailHarvestAssumption').textContent = 'Plant XP + Harvest XP';
       byId('detailGrowthTime').textContent = crop?.growthTime || 'Not listed';
     }
 
     function calculateXP() {
-      const startLevel = Math.max(1, Math.min(99, safeNumber(byId('xpStartLevel').value, 1)));
+      const currentTotalXP = Math.max(0, safeNumber(byId('xpCurrentTotal').value, 0));
       const targetLevel = Math.max(1, Math.min(99, safeNumber(byId('xpTargetLevel').value, 10)));
-      let currentWithin = Math.max(0, safeNumber(byId('xpCurrentWithinLevel').value, 0));
-      const overflowMode = byId('xpOverflowMode').value;
       const messageEl = byId('xpMessage');
       setMessage(messageEl, '');
-
-      if (targetLevel < startLevel) {
-        setMessage(messageEl, 'Target level cannot be lower than current level.');
-        return;
-      }
-
-      const startRow = getXPRow(startLevel);
+      const currentRow = getLevelFromTotalXP(currentTotalXP);
       const targetRow = getXPRow(targetLevel);
-      if (!startRow || !targetRow) {
-        setMessage(messageEl, 'Selected levels were not found in the XP dataset.');
+      if (!currentRow || !targetRow) {
+        setMessage(messageEl, 'The current XP or target level could not be matched to the dataset.');
         return;
       }
-
-      const maxWithinLevel = getMaxXPWithinLevel(startLevel);
-      if (currentWithin > maxWithinLevel && maxWithinLevel > 0) {
-        if (overflowMode === 'cap') {
-          currentWithin = maxWithinLevel;
-          byId('xpCurrentWithinLevel').value = maxWithinLevel;
-          setMessage(messageEl, 'Current XP within level was larger than the selected level range, so it was capped to the maximum allowed for that level.');
-        } else {
-          setMessage(messageEl, 'Current XP within level is larger than the selected level range. Update the current level or switch overflow handling to cap the value.');
-        }
-      }
-
-      const required = Math.max(0, targetRow.totalXP - startRow.totalXP);
-      const remaining = Math.max(0, required - currentWithin);
-
-      byId('xpStartTotalResult').textContent = formatNumber(startRow.totalXP);
+      const remaining = Math.max(0, targetRow.totalXP - currentTotalXP);
+      const xpIntoLevel = Math.max(0, currentTotalXP - currentRow.totalXP);
+      if (currentTotalXP > xpData[xpData.length - 1].totalXP) setMessage(messageEl, 'Current total XP is above the level 99 value in this dataset. The calculator will treat you as level 99.');
+      else if (targetLevel < currentRow.level) setMessage(messageEl, 'Target level is below your detected current level. Remaining XP is shown as 0.');
+      byId('xpDetectedLevelResult').textContent = formatNumber(currentRow.level);
       byId('xpTargetTotalResult').textContent = formatNumber(targetRow.totalXP);
-      byId('xpRequiredResult').textContent = formatNumber(required);
       byId('xpRemainingResult').textContent = formatNumber(remaining);
+      byId('xpIntoLevelResult').textContent = formatNumber(xpIntoLevel);
     }
 
     function resetXP() {
-      byId('xpStartLevel').value = 1;
+      byId('xpCurrentTotal').value = 0;
       byId('xpTargetLevel').value = 10;
-      byId('xpCurrentWithinLevel').value = 0;
-      byId('xpOverflowMode').value = 'cap';
       calculateXP();
     }
 
     function calculateFarming() {
-      const startLevel = Math.max(1, Math.min(99, safeNumber(byId('farmStartLevel').value, 1)));
+      const currentTotalXP = Math.max(0, safeNumber(byId('farmCurrentTotalXP').value, 0));
       const targetLevel = Math.max(1, Math.min(99, safeNumber(byId('farmTargetLevel').value, 10)));
-      let currentWithin = Math.max(0, safeNumber(byId('farmCurrentWithinLevel').value, 0));
       const plotsPerRun = Math.max(1, safeNumber(byId('farmPlotsPerRun').value, 1));
       const crop = getSelectedCrop();
       const messageEl = byId('farmMessage');
       setMessage(messageEl, '');
-
       if (!crop) {
         setMessage(messageEl, 'Choose a crop first.');
         return;
       }
-
-      if (targetLevel < startLevel) {
-        setMessage(messageEl, 'Target farming level cannot be lower than current farming level.');
-        return;
-      }
-
-      const startRow = getXPRow(startLevel);
+      const currentRow = getLevelFromTotalXP(currentTotalXP);
       const targetRow = getXPRow(targetLevel);
-      if (!startRow || !targetRow) {
-        setMessage(messageEl, 'Selected farming levels were not found in the XP dataset.');
+      if (!currentRow || !targetRow) {
+        setMessage(messageEl, 'The current XP or target level could not be matched to the dataset.');
         return;
       }
-
-      const maxWithinLevel = getMaxXPWithinLevel(startLevel);
-      if (currentWithin > maxWithinLevel && maxWithinLevel > 0) {
-        currentWithin = maxWithinLevel;
-        byId('farmCurrentWithinLevel').value = maxWithinLevel;
-        setMessage(messageEl, 'Current XP within level was larger than the selected level range, so it was capped to the maximum allowed for that level.');
-      }
-
-      if (startLevel < crop.levelRequirement) {
-        setMessage(messageEl, `${crop.crop} unlocks at level ${crop.levelRequirement}. Choose a crop available at your level or raise the current farming level.`);
-      }
-
+      byId('farmDetectedLevelResult').textContent = formatNumber(currentRow.level);
+      if (targetLevel < currentRow.level) setMessage(messageEl, 'Target farming level is below your detected current level. Remaining XP is shown as 0.');
+      if (currentRow.level < crop.levelRequirement) setMessage(messageEl, `${crop.crop} unlocks at level ${crop.levelRequirement}. Choose a crop available at your level or continue leveling.`);
       if (crop.xpPerCycle == null) {
         setMessage(messageEl, `${crop.crop} is missing one or more XP values in the dataset, so the calculator cannot produce a reliable total for it yet.`);
-        byId('farmRemainingXpResult').textContent = formatNumber(Math.max(0, targetRow.totalXP - startRow.totalXP - currentWithin));
+        byId('farmRemainingXpResult').textContent = formatNumber(Math.max(0, targetRow.totalXP - currentTotalXP));
         byId('farmCycleXpResult').textContent = 'Missing';
         byId('farmPlotsNeededResult').textContent = 'Missing';
         byId('farmRunsNeededResult').textContent = 'Missing';
         byId('farmSeedsNeededResult').textContent = 'Missing';
         byId('farmGrowthTimeResult').textContent = crop.growthTime || 'Not listed';
+        byId('farmHarvestAssumptionResult').textContent = 'Plant XP + Harvest XP';
         updateSelectedCropDetails();
         return;
       }
-
-      const required = Math.max(0, targetRow.totalXP - startRow.totalXP);
-      const remaining = Math.max(0, required - currentWithin);
+      const remaining = Math.max(0, targetRow.totalXP - currentTotalXP);
       const plotsNeeded = Math.ceil(remaining / crop.xpPerCycle);
       const runsNeeded = Math.ceil(plotsNeeded / plotsPerRun);
       const seedsNeeded = plotsNeeded * safeNumber(crop.seedsToPlant, 1);
-
       byId('farmRemainingXpResult').textContent = formatNumber(remaining);
       byId('farmCycleXpResult').textContent = formatNumber(crop.xpPerCycle);
       byId('farmPlotsNeededResult').textContent = formatNumber(plotsNeeded);
       byId('farmRunsNeededResult').textContent = formatNumber(runsNeeded);
       byId('farmSeedsNeededResult').textContent = formatNumber(seedsNeeded);
       byId('farmGrowthTimeResult').textContent = crop.growthTime || 'Not listed';
+      byId('farmHarvestAssumptionResult').textContent = 'Plant XP + Harvest XP';
       updateSelectedCropDetails();
     }
 
     function resetFarming() {
-      byId('farmStartLevel').value = 1;
+      byId('farmCurrentTotalXP').value = 0;
       byId('farmTargetLevel').value = 10;
-      byId('farmCurrentWithinLevel').value = 0;
       byId('farmPlotsPerRun').value = 1;
       byId('farmSortMode').value = 'level';
       updateCropSelect();
@@ -891,13 +734,7 @@
     function renderXPTable() {
       const term = byId('xpSearch').value.trim().toLowerCase();
       const rows = xpData.filter((row) => !term || String(row.level).includes(term));
-      byId('xpTableBody').innerHTML = rows.map((row) => `
-        <tr>
-          <td>${row.level}</td>
-          <td>${formatNumber(row.totalXP)}</td>
-          <td>${formatNumber(row.xpToNext)}</td>
-        </tr>
-      `).join('');
+      byId('xpTableBody').innerHTML = rows.map((row) => `<tr><td>${row.level}</td><td>${formatNumber(row.totalXP)}</td><td>${formatNumber(row.xpToNext)}</td></tr>`).join('');
     }
 
     function renderFarmingTable() {
@@ -908,27 +745,12 @@
         const matchesPatch = patch === 'all' || row.patchType === patch;
         return matchesSearch && matchesPatch;
       });
-
-      byId('farmingTableBody').innerHTML = rows.map((row) => `
-        <tr>
-          <td>${row.patchType}</td>
-          <td>${row.crop}</td>
-          <td>${row.levelRequirement}</td>
-          <td>${row.seedsToPlant ?? '-'}</td>
-          <td>${row.plantXP ?? 'Missing'}</td>
-          <td>${row.harvestXP ?? 'Missing'}</td>
-          <td>${row.xpPerCycle ?? 'Missing'}</td>
-          <td>${row.growthTime || 'Not listed'}</td>
-        </tr>
-      `).join('');
+      byId('farmingTableBody').innerHTML = rows.map((row) => `<tr><td>${row.patchType}</td><td>${row.crop}</td><td>${row.levelRequirement}</td><td>${row.seedsToPlant ?? '-'}</td><td>${row.plantXP ?? 'Missing'}</td><td>${row.harvestXP ?? 'Missing'}</td><td>${row.xpPerCycle ?? 'Missing'}</td><td>${row.growthTime || 'Not listed'}</td></tr>`).join('');
     }
 
     function populatePatchFilter() {
       const patchTypes = ['all', ...new Set(farmingData.map((row) => row.patchType))];
-      byId('farmingPatchFilter').innerHTML = patchTypes.map((type) => {
-        const label = type === 'all' ? 'All patch types' : type;
-        return `<option value="${type}">${label}</option>`;
-      }).join('');
+      byId('farmingPatchFilter').innerHTML = patchTypes.map((type) => `<option value="${type}">${type === 'all' ? 'All patch types' : type}</option>`).join('');
     }
 
     function initStats() {
@@ -941,9 +763,9 @@
     }
 
     function initTabs() {
-      document.querySelectorAll('.tab-button').forEach((button) => {
+      document.querySelectorAll('.tab-button[data-tab]').forEach((button) => {
         button.addEventListener('click', () => {
-          document.querySelectorAll('.tab-button').forEach((b) => b.classList.remove('active'));
+          document.querySelectorAll('.tab-button[data-tab]').forEach((b) => b.classList.remove('active'));
           document.querySelectorAll('.tab-panel').forEach((panel) => panel.classList.remove('active'));
           button.classList.add('active');
           byId(button.dataset.tab).classList.add('active');
@@ -964,14 +786,8 @@
     byId('xpResetButton').addEventListener('click', resetXP);
     byId('farmCalculateButton').addEventListener('click', calculateFarming);
     byId('farmResetButton').addEventListener('click', resetFarming);
-    byId('farmSortMode').addEventListener('change', () => {
-      updateCropSelect();
-      calculateFarming();
-    });
-    byId('farmCropSelect').addEventListener('change', () => {
-      updateSelectedCropDetails();
-      calculateFarming();
-    });
+    byId('farmSortMode').addEventListener('change', () => { updateCropSelect(); calculateFarming(); });
+    byId('farmCropSelect').addEventListener('change', () => { updateSelectedCropDetails(); calculateFarming(); });
     byId('xpSearch').addEventListener('input', renderXPTable);
     byId('farmingSearch').addEventListener('input', renderFarmingTable);
     byId('farmingPatchFilter').addEventListener('change', renderFarmingTable);
