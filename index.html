@@ -6,16 +6,18 @@
   <title>Remote Realms Calculator</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --panel-2: #1f2937;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --accent: #7c3aed;
-      --accent-2: #22c55e;
-      --danger: #ef4444;
-      --border: #374151;
-      --card: #111827;
+      --bg: #091224;
+      --bg-2: #0f1c35;
+      --panel: rgba(10, 20, 40, 0.92);
+      --panel-2: rgba(14, 28, 53, 0.98);
+      --text: #eef3ff;
+      --muted: #b8c3dd;
+      --border: rgba(122, 145, 191, 0.25);
+      --accent: #8b5cf6;
+      --accent-soft: rgba(139, 92, 246, 0.18);
+      --success: #22c55e;
+      --warning: #ef4444;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
     }
 
     * { box-sizing: border-box; }
@@ -23,53 +25,82 @@
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #0b1020 0%, #111827 100%);
       color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(59, 130, 246, 0.12), transparent 30%),
+        radial-gradient(circle at left center, rgba(139, 92, 246, 0.1), transparent 30%),
+        linear-gradient(180deg, var(--bg) 0%, #07101f 100%);
       line-height: 1.5;
     }
 
     .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 24px;
+      width: min(1220px, calc(100% - 32px));
+      margin: 24px auto 48px;
     }
 
-    header {
+    .hero,
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 24px;
       margin-bottom: 24px;
     }
 
     h1, h2, h3 { margin: 0 0 12px; }
-
+    h1 { font-size: clamp(1.8rem, 3vw, 3rem); }
+    h2 { font-size: 1.6rem; }
+    h3 { font-size: 1.05rem; }
     p { margin: 0 0 12px; color: var(--muted); }
+    .muted { color: var(--muted); }
+    .small { font-size: 0.92rem; color: var(--muted); }
 
-    .hero {
-      background: rgba(17, 24, 39, 0.9);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    .pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(139, 92, 246, 0.32);
+      color: #ddd6fe;
+      font-size: 0.86rem;
+      font-weight: 700;
     }
 
     .tabs {
       display: flex;
-      gap: 8px;
-      margin: 20px 0;
+      gap: 10px;
       flex-wrap: wrap;
+      margin: 0 0 24px;
     }
 
     .tab-button {
       border: 1px solid var(--border);
-      background: var(--panel-2);
+      background: rgba(55, 65, 81, 0.35);
       color: var(--text);
-      padding: 10px 16px;
+      padding: 12px 18px;
       border-radius: 999px;
-      cursor: pointer;
       font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
     }
 
+    .tab-button:hover { transform: translateY(-1px); }
     .tab-button.active {
       background: var(--accent);
       border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.18);
     }
 
     .tab-panel { display: none; }
@@ -77,31 +108,29 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(12, 1fr);
+      grid-template-columns: repeat(12, minmax(0, 1fr));
       gap: 18px;
     }
 
     .card {
       grid-column: span 12;
-      background: rgba(17, 24, 39, 0.95);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      padding: 22px;
     }
 
-    .card.half { grid-column: span 6; }
+    .half { grid-column: span 6; }
+    .third { grid-column: span 4; }
 
     .field-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
+      margin-top: 14px;
     }
 
     .field {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
 
     label {
@@ -111,652 +140,817 @@
 
     input, select {
       width: 100%;
-      padding: 12px 14px;
-      border-radius: 12px;
+      border-radius: 14px;
       border: 1px solid var(--border);
-      background: #0b1220;
+      background: rgba(3, 12, 28, 0.94);
       color: var(--text);
-      font-size: 15px;
+      padding: 13px 14px;
+      font-size: 1rem;
     }
 
     input:focus, select:focus, button:focus {
-      outline: 3px solid rgba(124, 58, 237, 0.25);
+      outline: 3px solid rgba(139, 92, 246, 0.22);
       outline-offset: 2px;
-    }
-
-    .results {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .result-box {
-      background: #0b1220;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-    }
-
-    .result-label {
-      display: block;
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-
-    .result-value {
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .helper {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 8px;
-    }
-
-    .warning {
-      margin-top: 12px;
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      background: rgba(127, 29, 29, 0.25);
-      color: #fecaca;
-      border-radius: 12px;
-      padding: 12px;
-      display: none;
-    }
-
-    .success {
-      margin-top: 12px;
-      border: 1px solid rgba(34, 197, 94, 0.4);
-      background: rgba(20, 83, 45, 0.25);
-      color: #bbf7d0;
-      border-radius: 12px;
-      padding: 12px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 14px;
-      overflow: hidden;
-    }
-
-    th, td {
-      border: 1px solid var(--border);
-      padding: 10px;
-      text-align: left;
-    }
-
-    th {
-      background: #111827;
-    }
-
-    tbody tr:nth-child(odd) {
-      background: rgba(255,255,255,0.02);
     }
 
     .controls {
       display: flex;
-      gap: 10px;
-      align-items: center;
+      gap: 12px;
       flex-wrap: wrap;
-      margin-top: 12px;
+      margin-top: 16px;
     }
 
-    button {
+    button.action {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 16px;
       background: var(--accent);
       color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 16px;
       font-weight: 700;
       cursor: pointer;
     }
 
     button.secondary {
-      background: var(--panel-2);
       border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 16px;
+      background: rgba(55, 65, 81, 0.35);
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .results {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .result-box {
+      border: 1px solid var(--border);
+      background: rgba(3, 12, 28, 0.94);
+      border-radius: 18px;
+      padding: 14px;
+      min-height: 96px;
+    }
+
+    .result-label {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .result-value {
+      font-size: clamp(1.35rem, 2vw, 2rem);
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .message {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      background: rgba(127, 29, 29, 0.25);
+      color: #fecaca;
+    }
+
+    .message.visible { display: block; }
+
+    .success-box {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      background: rgba(21, 128, 61, 0.14);
+      color: #d1fae5;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      overflow: hidden;
+      border-radius: 16px;
+      table-layout: fixed;
+    }
+
+    th, td {
+      padding: 11px 10px;
+      border: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+      overflow-wrap: anywhere;
+    }
+
+    th {
+      background: rgba(15, 28, 53, 0.92);
       color: var(--text);
     }
 
-    .pill {
-      display: inline-block;
-      background: rgba(124, 58, 237, 0.15);
-      color: #ddd6fe;
-      border: 1px solid rgba(124, 58, 237, 0.35);
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      margin-right: 6px;
+    tbody tr:nth-child(odd) { background: rgba(255, 255, 255, 0.02); }
+
+    .table-controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      align-items: end;
+    }
+
+    .table-controls .field { min-width: 180px; flex: 1; }
+
+    .scroll-table {
+      overflow-x: auto;
+      margin-top: 14px;
+      border-radius: 18px;
+    }
+
+    .notice-list {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .notice-list li { margin-bottom: 8px; }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(3, 12, 28, 0.94);
+      padding: 14px;
+    }
+
+    .stat .label {
+      color: var(--muted);
+      font-size: 0.9rem;
+      display: block;
       margin-bottom: 6px;
     }
 
-    .small {
-      font-size: 13px;
-      color: var(--muted);
+    .stat .value {
+      font-size: 1.45rem;
+      font-weight: 700;
     }
 
-    @media (max-width: 800px) {
-      .card.half { grid-column: span 12; }
-      .field-grid, .results { grid-template-columns: 1fr; }
+    code {
+      background: rgba(255,255,255,0.06);
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #e9d5ff;
+    }
+
+    @media (max-width: 980px) {
+      .half, .third { grid-column: span 12; }
+      .field-grid, .results, .stats-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header class="hero">
+  <main class="container">
+    <section class="hero">
       <h1>Remote Realms Calculator</h1>
       <p>
-        A simple web version of your XP and farming calculator. This version includes the requested usability changes:
-        cleaner layout, level-based crop sorting, seed estimates, clearer assumptions, and basic input validation.
+        Rebuilt using your actual Remote Realms XP and Farming datasets. This version removes the placeholder crops,
+        keeps your current assumptions visible, and adds dataset tabs so the calculator and the source tables live together.
       </p>
-      <div>
-        <span class="pill">No negative inputs</span>
-        <span class="pill">Sort by level unlock</span>
-        <span class="pill">Seeds needed included</span>
-        <span class="pill">Harvest XP assumptions visible</span>
+      <div class="pill-row">
+        <span class="pill">Uses your real XP data</span>
+        <span class="pill">Uses your real farming data</span>
+        <span class="pill">XP Data tab included</span>
+        <span class="pill">Farming Data tab included</span>
+        <span class="pill">No compost assumptions forced in</span>
       </div>
-    </header>
+    </section>
 
-    <nav class="tabs" aria-label="Calculator sections">
-      <button class="tab-button active" data-tab="xp-panel">XP Calculator</button>
-      <button class="tab-button" data-tab="farming-panel">Farming Calculator</button>
-      <button class="tab-button" data-tab="data-panel">Data Notes</button>
+    <nav class="tabs" aria-label="Main sections">
+      <button class="tab-button active" data-tab="xp-calculator-panel">XP Calculator</button>
+      <button class="tab-button" data-tab="farming-calculator-panel">Farming Calculator</button>
+      <button class="tab-button" data-tab="xp-data-panel">XP Data</button>
+      <button class="tab-button" data-tab="farming-data-panel">Farming Data</button>
+      <button class="tab-button" data-tab="data-notes-panel">Data Notes</button>
     </nav>
 
-    <section id="xp-panel" class="tab-panel active">
+    <section id="xp-calculator-panel" class="tab-panel active">
       <div class="grid">
-        <div class="card half">
-          <h2>Skill XP Calculator</h2>
-          <p>Estimate total and remaining XP between your current level and target level.</p>
+        <article class="card half">
+          <h2>XP Calculator</h2>
+          <p>Estimate XP needed between your selected current level and target level using the full level 1–99 dataset.</p>
 
           <div class="field-grid">
             <div class="field">
-              <label for="startLevel">Current Level</label>
-              <input id="startLevel" type="number" min="1" max="99" value="1" />
+              <label for="xpStartLevel">Current Level</label>
+              <input id="xpStartLevel" type="number" min="1" max="99" value="1" />
             </div>
-
             <div class="field">
-              <label for="targetLevel">Target Level</label>
-              <input id="targetLevel" type="number" min="1" max="99" value="10" />
+              <label for="xpTargetLevel">Target Level</label>
+              <input id="xpTargetLevel" type="number" min="1" max="99" value="10" />
             </div>
-
             <div class="field">
-              <label for="currentXP">Current XP Within Current Level</label>
-              <input id="currentXP" type="number" min="0" value="0" />
+              <label for="xpCurrentWithinLevel">Current XP Within Current Level</label>
+              <input id="xpCurrentWithinLevel" type="number" min="0" value="0" />
             </div>
-
             <div class="field">
-              <label for="autoAdjustXP">Current XP Handling</label>
-              <select id="autoAdjustXP">
+              <label for="xpOverflowMode">When Current XP Exceeds Level Range</label>
+              <select id="xpOverflowMode">
+                <option value="cap">Cap value to this level range</option>
                 <option value="warn">Warn only</option>
-                <option value="cap">Cap at level range</option>
               </select>
             </div>
           </div>
 
           <div class="controls">
-            <button id="calculateXP">Calculate XP</button>
-            <button id="resetXP" class="secondary" type="button">Reset</button>
+            <button class="action" id="xpCalculateButton">Calculate XP</button>
+            <button class="secondary" id="xpResetButton" type="button">Reset</button>
           </div>
 
-          <div id="xpWarning" class="warning" role="alert"></div>
+          <div id="xpMessage" class="message" role="alert"></div>
 
           <div class="results" aria-live="polite">
             <div class="result-box">
               <span class="result-label">Start Level Total XP</span>
-              <div id="startLevelTotalXP" class="result-value">0</div>
+              <div id="xpStartTotalResult" class="result-value">0</div>
             </div>
             <div class="result-box">
               <span class="result-label">Target Level Total XP</span>
-              <div id="targetLevelTotalXP" class="result-value">0</div>
-            </div>
-            <div class="result-box">
-              <span class="result-label">Remaining XP</span>
-              <div id="remainingXP" class="result-value">0</div>
+              <div id="xpTargetTotalResult" class="result-value">0</div>
             </div>
             <div class="result-box">
               <span class="result-label">XP Needed For Full Goal</span>
-              <div id="requiredXP" class="result-value">0</div>
+              <div id="xpRequiredResult" class="result-value">0</div>
+            </div>
+            <div class="result-box">
+              <span class="result-label">Remaining XP After Current Progress</span>
+              <div id="xpRemainingResult" class="result-value">0</div>
             </div>
           </div>
 
-          <p class="helper">
-            This version treats <strong>Current XP Within Current Level</strong> as progress already earned beyond the selected current level's baseline XP.
-            If the number entered is larger than the XP range for that level, the calculator will warn you or cap the value depending on the setting above.
+          <p class="small" style="margin-top: 14px;">
+            <strong>How this works:</strong> the calculator uses the cumulative XP value attached to each level in your dataset.
+            <strong>Current XP Within Current Level</strong> means XP earned after reaching the selected current level baseline.
           </p>
-        </div>
+        </article>
 
-        <div class="card half">
-          <h2>How the XP math works</h2>
+        <article class="card half">
+          <h2>XP Formula Notes</h2>
           <table>
             <thead>
-              <tr>
-                <th>Term</th>
-                <th>Meaning</th>
-              </tr>
+              <tr><th>Item</th><th>Meaning</th></tr>
             </thead>
             <tbody>
               <tr>
                 <td>Start Level Total XP</td>
-                <td>Total cumulative XP required to be at your selected current level.</td>
+                <td>The cumulative XP required to be at the selected current level.</td>
               </tr>
               <tr>
-                <td>Current XP Within Current Level</td>
-                <td>Additional XP earned after reaching the selected current level.</td>
-              </tr>
-              <tr>
-                <td>Remaining XP</td>
-                <td>XP still needed after subtracting your current within-level progress.</td>
+                <td>Target Level Total XP</td>
+                <td>The cumulative XP required to reach the selected target level.</td>
               </tr>
               <tr>
                 <td>XP Needed For Full Goal</td>
-                <td>Total XP gap between the selected current level baseline and the target level baseline.</td>
+                <td><code>target total XP - start total XP</code></td>
+              </tr>
+              <tr>
+                <td>Remaining XP</td>
+                <td><code>full goal XP - current XP within current level</code>, never below zero.</td>
               </tr>
             </tbody>
           </table>
-          <div class="success">
-            Suggested future tweak: you can later add a dropdown for different skills if Remote Realms ever uses skill-specific XP tables.
+
+          <div class="success-box">
+            This calculator uses the full XP progression table for levels 1–99.
           </div>
-        </div>
+
+          <div class="stats-row">
+            <div class="stat">
+              <span class="label">Levels in dataset</span>
+              <div class="value" id="xpStatLevels">99</div>
+            </div>
+            <div class="stat">
+              <span class="label">Level cap</span>
+              <div class="value">99</div>
+            </div>
+            <div class="stat">
+              <span class="label">First level total XP</span>
+              <div class="value">0</div>
+            </div>
+            <div class="stat">
+              <span class="label">Level 99 total XP</span>
+              <div class="value" id="xpStatCapXp">15,233,507</div>
+            </div>
+          </div>
+        </article>
       </div>
     </section>
 
-    <section id="farming-panel" class="tab-panel">
+    <section id="farming-calculator-panel" class="tab-panel">
       <div class="grid">
-        <div class="card half">
+        <article class="card half">
           <h2>Farming Calculator</h2>
-          <p>Choose a crop and estimate the number of plots, cycles, and seeds needed to reach your target farming level.</p>
+          <p>Calculate farming progression using your real crop table, including patch type and seeds to plant.</p>
 
           <div class="field-grid">
             <div class="field">
-              <label for="farmCurrentLevel">Current Farming Level</label>
-              <input id="farmCurrentLevel" type="number" min="1" max="99" value="1" />
+              <label for="farmStartLevel">Current Farming Level</label>
+              <input id="farmStartLevel" type="number" min="1" max="99" value="1" />
             </div>
-
             <div class="field">
               <label for="farmTargetLevel">Target Farming Level</label>
               <input id="farmTargetLevel" type="number" min="1" max="99" value="10" />
             </div>
-
             <div class="field">
-              <label for="farmCurrentXP">Current XP Within Current Farming Level</label>
-              <input id="farmCurrentXP" type="number" min="0" value="0" />
+              <label for="farmCurrentWithinLevel">Current XP Within Current Farming Level</label>
+              <input id="farmCurrentWithinLevel" type="number" min="0" value="0" />
             </div>
-
             <div class="field">
-              <label for="plotCount">Plots Per Farming Run</label>
-              <input id="plotCount" type="number" min="1" value="1" />
+              <label for="farmPlotsPerRun">Plots Per Farming Run</label>
+              <input id="farmPlotsPerRun" type="number" min="1" value="1" />
             </div>
-
             <div class="field">
-              <label for="cropSelect">Crop</label>
-              <select id="cropSelect"></select>
-            </div>
-
-            <div class="field">
-              <label for="sortMode">Crop Sort</label>
-              <select id="sortMode">
+              <label for="farmSortMode">Crop Sort</label>
+              <select id="farmSortMode">
                 <option value="level">Level unlock</option>
                 <option value="alpha">Alphabetical</option>
+                <option value="patch">Patch type then level</option>
               </select>
+            </div>
+            <div class="field">
+              <label for="farmCropSelect">Crop</label>
+              <select id="farmCropSelect"></select>
             </div>
           </div>
 
           <div class="controls">
-            <button id="calculateFarming">Calculate Farming</button>
-            <button id="resetFarming" class="secondary" type="button">Reset</button>
+            <button class="action" id="farmCalculateButton">Calculate Farming</button>
+            <button class="secondary" id="farmResetButton" type="button">Reset</button>
           </div>
 
-          <div id="farmWarning" class="warning" role="alert"></div>
+          <div id="farmMessage" class="message" role="alert"></div>
 
           <div class="results" aria-live="polite">
             <div class="result-box">
               <span class="result-label">XP Remaining</span>
-              <div id="farmRemainingXP" class="result-value">0</div>
+              <div id="farmRemainingXpResult" class="result-value">0</div>
             </div>
             <div class="result-box">
               <span class="result-label">XP Per Plot / Cycle</span>
-              <div id="xpPerCycleResult" class="result-value">0</div>
+              <div id="farmCycleXpResult" class="result-value">0</div>
             </div>
             <div class="result-box">
               <span class="result-label">Plots Needed</span>
-              <div id="plotsNeeded" class="result-value">0</div>
+              <div id="farmPlotsNeededResult" class="result-value">0</div>
             </div>
             <div class="result-box">
-              <span class="result-label">Farming Runs Needed</span>
-              <div id="cyclesNeeded" class="result-value">0</div>
+              <span class="result-label">Runs Needed</span>
+              <div id="farmRunsNeededResult" class="result-value">0</div>
             </div>
             <div class="result-box">
-              <span class="result-label">Estimated Seeds Needed</span>
-              <div id="seedsNeeded" class="result-value">0</div>
+              <span class="result-label">Seeds Needed</span>
+              <div id="farmSeedsNeededResult" class="result-value">0</div>
             </div>
             <div class="result-box">
               <span class="result-label">Growth Time</span>
-              <div id="growthTimeResult" class="result-value">0 min</div>
+              <div id="farmGrowthTimeResult" class="result-value">-</div>
             </div>
           </div>
 
-          <p class="helper">
-            Assumption shown clearly: <strong>XP Per Plot / Cycle = Plant XP + Harvest XP</strong>. This does not currently include compost, watering bonuses, or unconfirmed yield modifiers.
+          <p class="small" style="margin-top: 14px;">
+            <strong>Current assumption:</strong> <code>XP per plot / cycle = Plant XP + Harvest XP</code>. This version does not include compost,
+            watering bonuses, or other mechanics still under testing.
           </p>
-        </div>
+        </article>
 
-        <div class="card half">
+        <article class="card half">
           <h2>Selected Crop Details</h2>
           <table>
             <thead>
-              <tr>
-                <th>Field</th>
-                <th>Value</th>
-              </tr>
+              <tr><th>Field</th><th>Value</th></tr>
             </thead>
             <tbody>
               <tr><td>Crop</td><td id="detailCrop">-</td></tr>
-              <tr><td>Level Requirement</td><td id="detailLevel">-</td></tr>
+              <tr><td>Patch Type</td><td id="detailPatchType">-</td></tr>
+              <tr><td>Level Requirement</td><td id="detailLevelRequirement">-</td></tr>
+              <tr><td>Seeds to Plant</td><td id="detailSeedsToPlant">-</td></tr>
               <tr><td>Plant XP</td><td id="detailPlantXP">-</td></tr>
               <tr><td>Harvest XP</td><td id="detailHarvestXP">-</td></tr>
               <tr><td>XP Per Plot / Cycle</td><td id="detailCycleXP">-</td></tr>
-              <tr><td>Growth Time</td><td id="detailGrowth">-</td></tr>
+              <tr><td>Growth Time</td><td id="detailGrowthTime">-</td></tr>
             </tbody>
           </table>
 
-          <div class="success">
-            Compost is intentionally excluded here because the community is still testing it and the values are not stable enough to model confidently.
+          <div class="success-box">
+            Compost is still intentionally excluded. Your community testing is valuable, but it is not stable enough yet for reliable public calculation.
           </div>
-        </div>
+
+          <div class="stats-row">
+            <div class="stat">
+              <span class="label">Farming records</span>
+              <div class="value" id="farmStatRecords">28</div>
+            </div>
+            <div class="stat">
+              <span class="label">Patch types</span>
+              <div class="value" id="farmStatPatchTypes">6</div>
+            </div>
+            <div class="stat">
+              <span class="label">Lowest crop level</span>
+              <div class="value" id="farmStatMinLevel">1</div>
+            </div>
+            <div class="stat">
+              <span class="label">Highest crop level</span>
+              <div class="value" id="farmStatMaxLevel">71</div>
+            </div>
+          </div>
+        </article>
       </div>
     </section>
 
-    <section id="data-panel" class="tab-panel">
+    <section id="xp-data-panel" class="tab-panel">
       <div class="grid">
-        <div class="card">
+        <article class="card">
+          <h2>XP Data Table</h2>
+          <p>Browse the full Remote Realms XP progression table used by the calculator.</p>
+
+          <div class="table-controls">
+            <div class="field">
+              <label for="xpSearch">Search by Level</label>
+              <input id="xpSearch" type="text" placeholder="Example: 50" />
+            </div>
+          </div>
+
+          <div class="scroll-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Level</th>
+                  <th>Total XP</th>
+                  <th>XP to Next Level</th>
+                </tr>
+              </thead>
+              <tbody id="xpTableBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="farming-data-panel" class="tab-panel">
+      <div class="grid">
+        <article class="card">
+          <h2>Farming Data Table</h2>
+          <p>Browse the crop records powering the farming calculator.</p>
+
+          <div class="table-controls">
+            <div class="field">
+              <label for="farmingSearch">Search Crops</label>
+              <input id="farmingSearch" type="text" placeholder="Example: tomato" />
+            </div>
+            <div class="field">
+              <label for="farmingPatchFilter">Filter by Patch Type</label>
+              <select id="farmingPatchFilter"></select>
+            </div>
+          </div>
+
+          <div class="scroll-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Patch Type</th>
+                  <th>Crop</th>
+                  <th>Level Req</th>
+                  <th>Seeds to Plant</th>
+                  <th>Plant XP</th>
+                  <th>Harvest XP</th>
+                  <th>XP Per Cycle</th>
+                  <th>Growth Time</th>
+                </tr>
+              </thead>
+              <tbody id="farmingTableBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="data-notes-panel" class="tab-panel">
+      <div class="grid">
+        <article class="card">
           <h2>Data Notes and Assumptions</h2>
-          <p>This page helps make the calculator more transparent for players.</p>
+          <p>This page explains the boundaries of the current public version.</p>
 
           <h3>Current scope</h3>
-          <ul>
-            <li>Includes XP progression data for levels 1–99.</li>
-            <li>Includes farming crop data used for planning and comparison.</li>
-            <li>Excludes compost, watering bonuses, and other mechanics that are still under testing.</li>
+          <ul class="notice-list">
+            <li>Includes your full XP progression dataset for levels 1–99.</li>
+            <li>Includes your real farming crop table, patch types, seeds to plant, plant XP, harvest XP, and XP per cycle.</li>
+            <li>Uses your spreadsheet assumption that XP per cycle combines plant XP and harvest XP.</li>
+            <li>Does not force compost into the tool while that mechanic is still under active community investigation.</li>
           </ul>
 
-          <h3>Community-requested changes included in this version</h3>
-          <ul>
-            <li>Crop sorting by level unlock.</li>
-            <li>Clearer explanation of how XP is calculated.</li>
-            <li>Seeds needed estimate.</li>
-            <li>Prevention of negative or impossible inputs.</li>
-            <li>Improved visibility and layout.</li>
+          <h3>Recommended next development steps</h3>
+          <ul class="notice-list">
+            <li>Move the embedded datasets into separate <code>.json</code> files later for easier maintenance.</li>
+            <li>Add a small changelog so you can mark when game updates alter numbers.</li>
+            <li>Keep usernames and direct participant identifiers out of the public site unless you have permission.</li>
           </ul>
-
-          <h3>Privacy and community contribution</h3>
-          <p class="small">
-            If you later publish this site, use aggregated feedback or anonymous notes rather than identifiable player names unless you have permission.
-          </p>
-
-          <h3>How to replace the sample data with your real data</h3>
-          <ol>
-            <li>Export your <strong>XP_Data</strong> and <strong>Farming_Data</strong> sheets to CSV or JSON.</li>
-            <li>Replace the arrays in the <code>&lt;script&gt;</code> section at the bottom of this file.</li>
-            <li>Upload this file to GitHub Pages or split it into separate HTML, CSS, and JS files later.</li>
-          </ol>
-        </div>
+        </article>
       </div>
     </section>
-  </div>
+  </main>
 
   <script>
-    // SAMPLE DATA
-    // Replace these arrays with your full real dataset later.
-    const xpData = [
-      { level: 1, totalXP: 0, xpToNext: 97 },
-      { level: 2, totalXP: 97, xpToNext: 107 },
-      { level: 3, totalXP: 204, xpToNext: 119 },
-      { level: 4, totalXP: 323, xpToNext: 132 },
-      { level: 5, totalXP: 455, xpToNext: 146 },
-      { level: 6, totalXP: 601, xpToNext: 161 },
-      { level: 7, totalXP: 762, xpToNext: 178 },
-      { level: 8, totalXP: 940, xpToNext: 196 },
-      { level: 9, totalXP: 1136, xpToNext: 216 },
-      { level: 10, totalXP: 1352, xpToNext: 0 }
-    ];
+    const xpData = [{"level":1,"totalXP":0,"xpToNext":97},{"level":2,"totalXP":97,"xpToNext":107},{"level":3,"totalXP":204,"xpToNext":119},{"level":4,"totalXP":323,"xpToNext":131},{"level":5,"totalXP":454,"xpToNext":145},{"level":6,"totalXP":599,"xpToNext":160},{"level":7,"totalXP":759,"xpToNext":177},{"level":8,"totalXP":936,"xpToNext":195},{"level":9,"totalXP":1131,"xpToNext":216},{"level":10,"totalXP":1347,"xpToNext":238},{"level":11,"totalXP":1585,"xpToNext":263},{"level":12,"totalXP":1848,"xpToNext":290},{"level":13,"totalXP":2138,"xpToNext":321},{"level":14,"totalXP":2459,"xpToNext":354},{"level":15,"totalXP":2813,"xpToNext":391},{"level":16,"totalXP":3204,"xpToNext":431},{"level":17,"totalXP":3635,"xpToNext":476},{"level":18,"totalXP":4111,"xpToNext":525},{"level":19,"totalXP":4636,"xpToNext":580},{"level":20,"totalXP":5216,"xpToNext":640},{"level":21,"totalXP":5856,"xpToNext":706},{"level":22,"totalXP":6562,"xpToNext":779},{"level":23,"totalXP":7341,"xpToNext":860},{"level":24,"totalXP":8201,"xpToNext":949},{"level":25,"totalXP":9150,"xpToNext":1048},{"level":26,"totalXP":10198,"xpToNext":1157},{"level":27,"totalXP":11355,"xpToNext":1277},{"level":28,"totalXP":12632,"xpToNext":1409},{"level":29,"totalXP":14041,"xpToNext":1555},{"level":30,"totalXP":15596,"xpToNext":1717},{"level":31,"totalXP":17313,"xpToNext":1895},{"level":32,"totalXP":19208,"xpToNext":2092},{"level":33,"totalXP":21300,"xpToNext":2309},{"level":34,"totalXP":23609,"xpToNext":2549},{"level":35,"totalXP":26158,"xpToNext":2813},{"level":36,"totalXP":28971,"xpToNext":3105},{"level":37,"totalXP":32076,"xpToNext":3428},{"level":38,"totalXP":35504,"xpToNext":3784},{"level":39,"totalXP":39288,"xpToNext":4177},{"level":40,"totalXP":43465,"xpToNext":4611},{"level":41,"totalXP":48076,"xpToNext":5091},{"level":42,"totalXP":53167,"xpToNext":5620},{"level":43,"totalXP":58787,"xpToNext":6204},{"level":44,"totalXP":64991,"xpToNext":6849},{"level":45,"totalXP":71840,"xpToNext":7561},{"level":46,"totalXP":79401,"xpToNext":8347},{"level":47,"totalXP":87748,"xpToNext":9215},{"level":48,"totalXP":96963,"xpToNext":10173},{"level":49,"totalXP":107136,"xpToNext":11231},{"level":50,"totalXP":118367,"xpToNext":12399},{"level":51,"totalXP":130766,"xpToNext":13689},{"level":52,"totalXP":144455,"xpToNext":15113},{"level":53,"totalXP":159568,"xpToNext":16685},{"level":54,"totalXP":176253,"xpToNext":18421},{"level":55,"totalXP":194674,"xpToNext":20337},{"level":56,"totalXP":215011,"xpToNext":22453},{"level":57,"totalXP":237464,"xpToNext":24789},{"level":58,"totalXP":262253,"xpToNext":27368},{"level":59,"totalXP":289621,"xpToNext":30215},{"level":60,"totalXP":319836,"xpToNext":33359},{"level":61,"totalXP":353195,"xpToNext":36830},{"level":62,"totalXP":390025,"xpToNext":40663},{"level":63,"totalXP":430688,"xpToNext":44894},{"level":64,"totalXP":475582,"xpToNext":49566},{"level":65,"totalXP":525148,"xpToNext":54724},{"level":66,"totalXP":579872,"xpToNext":60419},{"level":67,"totalXP":640291,"xpToNext":66706},{"level":68,"totalXP":706997,"xpToNext":73648},{"level":69,"totalXP":780645,"xpToNext":81313},{"level":70,"totalXP":861958,"xpToNext":89775},{"level":71,"totalXP":951733,"xpToNext":99118},{"level":72,"totalXP":1050851,"xpToNext":109434},{"level":73,"totalXP":1160285,"xpToNext":120823},{"level":74,"totalXP":1281108,"xpToNext":133398},{"level":75,"totalXP":1414506,"xpToNext":147282},{"level":76,"totalXP":1561788,"xpToNext":162611},{"level":77,"totalXP":1724399,"xpToNext":179536},{"level":78,"totalXP":1903935,"xpToNext":198222},{"level":79,"totalXP":2102157,"xpToNext":218853},{"level":80,"totalXP":2321010,"xpToNext":241631},{"level":81,"totalXP":2562641,"xpToNext":266781},{"level":82,"totalXP":2829422,"xpToNext":294548},{"level":83,"totalXP":3123970,"xpToNext":325206},{"level":84,"totalXP":3449176,"xpToNext":359055},{"level":85,"totalXP":3808231,"xpToNext":396427},{"level":86,"totalXP":4204658,"xpToNext":437689},{"level":87,"totalXP":4642347,"xpToNext":483246},{"level":88,"totalXP":5125593,"xpToNext":533544},{"level":89,"totalXP":5659137,"xpToNext":589079},{"level":90,"totalXP":6248216,"xpToNext":650394},{"level":91,"totalXP":6898610,"xpToNext":718091},{"level":92,"totalXP":7616701,"xpToNext":792835},{"level":93,"totalXP":8409536,"xpToNext":875359},{"level":94,"totalXP":9284895,"xpToNext":966472},{"level":95,"totalXP":10251367,"xpToNext":1067070},{"level":96,"totalXP":11318437,"xpToNext":1178139},{"level":97,"totalXP":12496576,"xpToNext":1300768},{"level":98,"totalXP":13797344,"xpToNext":1436163},{"level":99,"totalXP":15233507,"xpToNext":0}];
+    const farmingData = [{"patchType":"Thin","crop":"Potato","levelRequirement":1,"seedsToPlant":3,"plantXP":9,"harvestXP":12,"xpPerCycle":21,"growthTime":"25 mins"},{"patchType":"Thin","crop":"Carrot","levelRequirement":5,"seedsToPlant":3,"plantXP":15,"harvestXP":17,"xpPerCycle":32,"growthTime":"85 mins"},{"patchType":"Thin","crop":"Onion","levelRequirement":14,"seedsToPlant":3,"plantXP":25,"harvestXP":22,"xpPerCycle":47,"growthTime":"105 mins"},{"patchType":"Thin","crop":"Cucumber","levelRequirement":26,"seedsToPlant":3,"plantXP":39,"harvestXP":25,"xpPerCycle":64,"growthTime":"130-35 mins"},{"patchType":"Thin","crop":"Tomato","levelRequirement":32,"seedsToPlant":3,"plantXP":37,"harvestXP":27,"xpPerCycle":64,"growthTime":"130-35 mins"},{"patchType":"Thin","crop":"Avocado","levelRequirement":40,"seedsToPlant":3,"plantXP":67,"harvestXP":44,"xpPerCycle":111,"growthTime":"205-210 mins"},{"patchType":"Thin","crop":"Watermelon","levelRequirement":49,"seedsToPlant":3,"plantXP":85,"harvestXP":57,"xpPerCycle":142,"growthTime":"205-210 mins"},{"patchType":"Thin","crop":"Cacao fruit","levelRequirement":71,"seedsToPlant":3,"plantXP":90,"harvestXP":65,"xpPerCycle":155,"growthTime":"205-210 mins"},{"patchType":"Wide","crop":"Flax","levelRequirement":9,"seedsToPlant":10,"plantXP":16,"harvestXP":21,"xpPerCycle":37,"growthTime":""},{"patchType":"Wide","crop":"Wheat","levelRequirement":21,"seedsToPlant":10,"plantXP":28,"harvestXP":26,"xpPerCycle":54,"growthTime":""},{"patchType":"Wide","crop":"Barley","levelRequirement":27,"seedsToPlant":10,"plantXP":42,"harvestXP":30,"xpPerCycle":72,"growthTime":""},{"patchType":"Wide","crop":"Cotton","levelRequirement":35,"seedsToPlant":10,"plantXP":60,"harvestXP":37,"xpPerCycle":97,"growthTime":""},{"patchType":"Wide","crop":"Sugarcane","levelRequirement":64,"seedsToPlant":10,"plantXP":72,"harvestXP":57,"xpPerCycle":129,"growthTime":""},{"patchType":"Herb","crop":"Panrodon","levelRequirement":11,"seedsToPlant":1,"plantXP":16,"harvestXP":18,"xpPerCycle":34,"growthTime":""},{"patchType":"Herb","crop":"Cerl","levelRequirement":17,"seedsToPlant":1,"plantXP":22,"harvestXP":25,"xpPerCycle":47,"growthTime":""},{"patchType":"Herb","crop":"Tryllium","levelRequirement":21,"seedsToPlant":1,"plantXP":30,"harvestXP":33,"xpPerCycle":63,"growthTime":""},{"patchType":"Herb","crop":"Aljarro","levelRequirement":24,"seedsToPlant":1,"plantXP":33,"harvestXP":37,"xpPerCycle":70,"growthTime":""},{"patchType":"Herb","crop":"Morrithol","levelRequirement":29,"seedsToPlant":1,"plantXP":43,"harvestXP":45,"xpPerCycle":88,"growthTime":""},{"patchType":"Herb","crop":"Landonil","levelRequirement":35,"seedsToPlant":1,"plantXP":50,"harvestXP":54,"xpPerCycle":104,"growthTime":""},{"patchType":"Herb","crop":"Hops","levelRequirement":36,"seedsToPlant":1,"plantXP":52,"harvestXP":52,"xpPerCycle":104,"growthTime":""},{"patchType":"Herb","crop":"Casvuil","levelRequirement":40,"seedsToPlant":1,"plantXP":null,"harvestXP":null,"xpPerCycle":null,"growthTime":""},{"patchType":"Herb","crop":"Ditrisil","levelRequirement":42,"seedsToPlant":1,"plantXP":63,"harvestXP":66,"xpPerCycle":129,"growthTime":""},{"patchType":"Herb","crop":"Sebernis","levelRequirement":47,"seedsToPlant":1,"plantXP":66,"harvestXP":71,"xpPerCycle":137,"growthTime":""},{"patchType":"Herb","crop":"Osukeno","levelRequirement":54,"seedsToPlant":1,"plantXP":72,"harvestXP":72,"xpPerCycle":144,"growthTime":""},{"patchType":"Herb","crop":"Sanatone","levelRequirement":61,"seedsToPlant":1,"plantXP":77,"harvestXP":77,"xpPerCycle":154,"growthTime":""},{"patchType":"Flower","crop":"Twisted blade","levelRequirement":40,"seedsToPlant":1,"plantXP":60,"harvestXP":30,"xpPerCycle":90,"growthTime":""},{"patchType":"Underwater","crop":"Seaweed","levelRequirement":33,"seedsToPlant":1,"plantXP":30,"harvestXP":36,"xpPerCycle":66,"growthTime":""},{"patchType":"Underwater","crop":"Thick kelp","levelRequirement":44,"seedsToPlant":1,"plantXP":50,"harvestXP":48,"xpPerCycle":98,"growthTime":""}];
 
-    const farmingData = [
-      { crop: 'Potato', levelRequirement: 1, plantXP: 9, harvestXP: 12, growthTime: 25, xpPerCycle: 21 },
-      { crop: 'Carrot', levelRequirement: 5, plantXP: 10, harvestXP: 17, growthTime: 85, xpPerCycle: 27 },
-      { crop: 'Onion', levelRequirement: 14, plantXP: 12, harvestXP: 22, growthTime: 105, xpPerCycle: 34 },
-      { crop: 'Cucumber', levelRequirement: 20, plantXP: 15, harvestXP: 30, growthTime: 120, xpPerCycle: 45 },
-      { crop: 'Tomato', levelRequirement: 28, plantXP: 18, harvestXP: 38, growthTime: 140, xpPerCycle: 56 },
-      { crop: 'Banana', levelRequirement: 36, plantXP: 22, harvestXP: 50, growthTime: 180, xpPerCycle: 72 }
-    ];
-
-    // HELPERS
     const byId = (id) => document.getElementById(id);
     const formatNumber = (value) => Number(value).toLocaleString();
+    const levelMap = new Map(xpData.map((row) => [row.level, row]));
+
+    function safeNumber(value, fallback = 0) {
+      const num = Number(value);
+      return Number.isFinite(num) ? num : fallback;
+    }
+
+    function setMessage(element, text = '') {
+      element.textContent = text;
+      element.classList.toggle('visible', Boolean(text));
+    }
 
     function getXPRow(level) {
-      return xpData.find((row) => row.level === level);
+      return levelMap.get(Number(level));
     }
 
-    function clampNonNegative(input) {
-      const n = Number(input);
-      if (Number.isNaN(n) || n < 0) return 0;
-      return n;
+    function getMaxXPWithinLevel(level) {
+      const row = getXPRow(level);
+      return row ? safeNumber(row.xpToNext, 0) : 0;
     }
 
-    // TABS
-    document.querySelectorAll('.tab-button').forEach((button) => {
-      button.addEventListener('click', () => {
-        document.querySelectorAll('.tab-button').forEach((b) => b.classList.remove('active'));
-        document.querySelectorAll('.tab-panel').forEach((panel) => panel.classList.remove('active'));
-        button.classList.add('active');
-        byId(button.dataset.tab).classList.add('active');
+    function getSortedCrops(mode) {
+      const list = [...farmingData];
+      if (mode === 'alpha') {
+        list.sort((a, b) => a.crop.localeCompare(b.crop));
+      } else if (mode === 'patch') {
+        list.sort((a, b) => a.patchType.localeCompare(b.patchType) || a.levelRequirement - b.levelRequirement || a.crop.localeCompare(b.crop));
+      } else {
+        list.sort((a, b) => a.levelRequirement - b.levelRequirement || a.crop.localeCompare(b.crop));
+      }
+      return list;
+    }
+
+    function getSelectedCrop() {
+      return farmingData.find((item) => item.crop === byId('farmCropSelect').value) || null;
+    }
+
+    function updateCropSelect() {
+      const select = byId('farmCropSelect');
+      const previous = select.value;
+      const sorted = getSortedCrops(byId('farmSortMode').value);
+      select.innerHTML = '';
+
+      sorted.forEach((crop) => {
+        const option = document.createElement('option');
+        option.value = crop.crop;
+        option.textContent = `${crop.crop} (${crop.patchType}, Lvl ${crop.levelRequirement})`;
+        select.appendChild(option);
       });
-    });
 
-    // XP CALCULATOR
-    function calculateXP() {
-      const startLevel = clampNonNegative(byId('startLevel').value);
-      const targetLevel = clampNonNegative(byId('targetLevel').value);
-      let currentXP = clampNonNegative(byId('currentXP').value);
-      const handling = byId('autoAdjustXP').value;
-      const warning = byId('xpWarning');
-      warning.style.display = 'none';
-      warning.textContent = '';
-
-      if (startLevel < 1 || targetLevel < 1 || startLevel > 99 || targetLevel > 99) {
-        warning.textContent = 'Levels must stay between 1 and 99.';
-        warning.style.display = 'block';
-        return;
+      if (sorted.some((crop) => crop.crop === previous)) {
+        select.value = previous;
       }
 
+      updateSelectedCropDetails();
+    }
+
+    function updateSelectedCropDetails() {
+      const crop = getSelectedCrop();
+      byId('detailCrop').textContent = crop?.crop ?? '-';
+      byId('detailPatchType').textContent = crop?.patchType ?? '-';
+      byId('detailLevelRequirement').textContent = crop?.levelRequirement ?? '-';
+      byId('detailSeedsToPlant').textContent = crop?.seedsToPlant ?? '-';
+      byId('detailPlantXP').textContent = crop?.plantXP ?? 'Missing';
+      byId('detailHarvestXP').textContent = crop?.harvestXP ?? 'Missing';
+      byId('detailCycleXP').textContent = crop?.xpPerCycle ?? 'Missing';
+      byId('detailGrowthTime').textContent = crop?.growthTime || 'Not listed';
+    }
+
+    function calculateXP() {
+      const startLevel = Math.max(1, Math.min(99, safeNumber(byId('xpStartLevel').value, 1)));
+      const targetLevel = Math.max(1, Math.min(99, safeNumber(byId('xpTargetLevel').value, 10)));
+      let currentWithin = Math.max(0, safeNumber(byId('xpCurrentWithinLevel').value, 0));
+      const overflowMode = byId('xpOverflowMode').value;
+      const messageEl = byId('xpMessage');
+      setMessage(messageEl, '');
+
       if (targetLevel < startLevel) {
-        warning.textContent = 'Target level cannot be lower than current level.';
-        warning.style.display = 'block';
+        setMessage(messageEl, 'Target level cannot be lower than current level.');
         return;
       }
 
       const startRow = getXPRow(startLevel);
       const targetRow = getXPRow(targetLevel);
-
       if (!startRow || !targetRow) {
-        warning.textContent = 'One of the selected levels is missing from the dataset.';
-        warning.style.display = 'block';
+        setMessage(messageEl, 'Selected levels were not found in the XP dataset.');
         return;
       }
 
-      const levelRangeXP = startRow.xpToNext || 0;
-
-      if (currentXP > levelRangeXP && levelRangeXP > 0) {
-        if (handling === 'cap') {
-          currentXP = levelRangeXP;
-          byId('currentXP').value = levelRangeXP;
-          warning.textContent = 'Current XP was larger than the selected level range, so it was capped to the maximum XP for that level.';
-          warning.style.display = 'block';
+      const maxWithinLevel = getMaxXPWithinLevel(startLevel);
+      if (currentWithin > maxWithinLevel && maxWithinLevel > 0) {
+        if (overflowMode === 'cap') {
+          currentWithin = maxWithinLevel;
+          byId('xpCurrentWithinLevel').value = maxWithinLevel;
+          setMessage(messageEl, 'Current XP within level was larger than the selected level range, so it was capped to the maximum allowed for that level.');
         } else {
-          warning.textContent = 'Current XP is larger than the selected level range. Update the level or switch handling to cap the value.';
-          warning.style.display = 'block';
+          setMessage(messageEl, 'Current XP within level is larger than the selected level range. Update the current level or switch overflow handling to cap the value.');
         }
       }
 
-      const requiredXP = Math.max(0, targetRow.totalXP - startRow.totalXP);
-      const remainingXP = Math.max(0, requiredXP - currentXP);
+      const required = Math.max(0, targetRow.totalXP - startRow.totalXP);
+      const remaining = Math.max(0, required - currentWithin);
 
-      byId('startLevelTotalXP').textContent = formatNumber(startRow.totalXP);
-      byId('targetLevelTotalXP').textContent = formatNumber(targetRow.totalXP);
-      byId('remainingXP').textContent = formatNumber(remainingXP);
-      byId('requiredXP').textContent = formatNumber(requiredXP);
+      byId('xpStartTotalResult').textContent = formatNumber(startRow.totalXP);
+      byId('xpTargetTotalResult').textContent = formatNumber(targetRow.totalXP);
+      byId('xpRequiredResult').textContent = formatNumber(required);
+      byId('xpRemainingResult').textContent = formatNumber(remaining);
     }
 
-    function resetXPForm() {
-      byId('startLevel').value = 1;
-      byId('targetLevel').value = 10;
-      byId('currentXP').value = 0;
-      byId('autoAdjustXP').value = 'warn';
-      byId('xpWarning').style.display = 'none';
+    function resetXP() {
+      byId('xpStartLevel').value = 1;
+      byId('xpTargetLevel').value = 10;
+      byId('xpCurrentWithinLevel').value = 0;
+      byId('xpOverflowMode').value = 'cap';
       calculateXP();
     }
 
-    byId('calculateXP').addEventListener('click', calculateXP);
-    byId('resetXP').addEventListener('click', resetXPForm);
-
-    // FARMING CALCULATOR
-    function populateCropOptions() {
-      const sortMode = byId('sortMode').value;
-      const select = byId('cropSelect');
-      const currentValue = select.value;
-
-      let sorted = [...farmingData];
-      if (sortMode === 'level') {
-        sorted.sort((a, b) => a.levelRequirement - b.levelRequirement || a.crop.localeCompare(b.crop));
-      } else {
-        sorted.sort((a, b) => a.crop.localeCompare(b.crop));
-      }
-
-      select.innerHTML = '';
-      sorted.forEach((crop) => {
-        const option = document.createElement('option');
-        option.value = crop.crop;
-        option.textContent = `${crop.crop} (Lvl ${crop.levelRequirement})`;
-        select.appendChild(option);
-      });
-
-      if ([...select.options].some((opt) => opt.value === currentValue)) {
-        select.value = currentValue;
-      }
-
-      updateCropDetails();
-    }
-
-    function getSelectedCrop() {
-      return farmingData.find((crop) => crop.crop === byId('cropSelect').value);
-    }
-
-    function updateCropDetails() {
-      const crop = getSelectedCrop();
-      if (!crop) return;
-      byId('detailCrop').textContent = crop.crop;
-      byId('detailLevel').textContent = crop.levelRequirement;
-      byId('detailPlantXP').textContent = crop.plantXP;
-      byId('detailHarvestXP').textContent = crop.harvestXP;
-      byId('detailCycleXP').textContent = crop.xpPerCycle;
-      byId('detailGrowth').textContent = `${crop.growthTime} min`;
-    }
-
     function calculateFarming() {
-      const currentLevel = clampNonNegative(byId('farmCurrentLevel').value);
-      const targetLevel = clampNonNegative(byId('farmTargetLevel').value);
-      let currentXP = clampNonNegative(byId('farmCurrentXP').value);
-      const plotsPerRun = Math.max(1, clampNonNegative(byId('plotCount').value));
+      const startLevel = Math.max(1, Math.min(99, safeNumber(byId('farmStartLevel').value, 1)));
+      const targetLevel = Math.max(1, Math.min(99, safeNumber(byId('farmTargetLevel').value, 10)));
+      let currentWithin = Math.max(0, safeNumber(byId('farmCurrentWithinLevel').value, 0));
+      const plotsPerRun = Math.max(1, safeNumber(byId('farmPlotsPerRun').value, 1));
       const crop = getSelectedCrop();
-      const warning = byId('farmWarning');
-      warning.style.display = 'none';
-      warning.textContent = '';
+      const messageEl = byId('farmMessage');
+      setMessage(messageEl, '');
 
       if (!crop) {
-        warning.textContent = 'Choose a crop first.';
-        warning.style.display = 'block';
+        setMessage(messageEl, 'Choose a crop first.');
         return;
       }
 
-      if (currentLevel < 1 || targetLevel < 1 || currentLevel > 99 || targetLevel > 99) {
-        warning.textContent = 'Levels must stay between 1 and 99.';
-        warning.style.display = 'block';
+      if (targetLevel < startLevel) {
+        setMessage(messageEl, 'Target farming level cannot be lower than current farming level.');
         return;
       }
 
-      if (targetLevel < currentLevel) {
-        warning.textContent = 'Target level cannot be lower than current level.';
-        warning.style.display = 'block';
-        return;
-      }
-
-      if (currentLevel < crop.levelRequirement) {
-        warning.textContent = `This crop unlocks at level ${crop.levelRequirement}. Choose a crop available at your level or raise the current level input.`;
-        warning.style.display = 'block';
-        return;
-      }
-
-      const startRow = getXPRow(currentLevel);
+      const startRow = getXPRow(startLevel);
       const targetRow = getXPRow(targetLevel);
-
       if (!startRow || !targetRow) {
-        warning.textContent = 'One of the selected levels is missing from the XP dataset.';
-        warning.style.display = 'block';
+        setMessage(messageEl, 'Selected farming levels were not found in the XP dataset.');
         return;
       }
 
-      const levelRangeXP = startRow.xpToNext || 0;
-      if (currentXP > levelRangeXP && levelRangeXP > 0) {
-        currentXP = levelRangeXP;
-        byId('farmCurrentXP').value = levelRangeXP;
-        warning.textContent = 'Current XP was larger than the selected level range, so it was capped to the maximum XP for that level.';
-        warning.style.display = 'block';
+      const maxWithinLevel = getMaxXPWithinLevel(startLevel);
+      if (currentWithin > maxWithinLevel && maxWithinLevel > 0) {
+        currentWithin = maxWithinLevel;
+        byId('farmCurrentWithinLevel').value = maxWithinLevel;
+        setMessage(messageEl, 'Current XP within level was larger than the selected level range, so it was capped to the maximum allowed for that level.');
       }
 
-      const requiredXP = Math.max(0, targetRow.totalXP - startRow.totalXP);
-      const remainingXP = Math.max(0, requiredXP - currentXP);
-      const xpPerPlot = crop.xpPerCycle;
-      const plotsNeeded = xpPerPlot > 0 ? Math.ceil(remainingXP / xpPerPlot) : 0;
-      const cyclesNeeded = plotsPerRun > 0 ? Math.ceil(plotsNeeded / plotsPerRun) : 0;
-      const seedsNeeded = plotsNeeded; // 1 seed per plot assumption
+      if (startLevel < crop.levelRequirement) {
+        setMessage(messageEl, `${crop.crop} unlocks at level ${crop.levelRequirement}. Choose a crop available at your level or raise the current farming level.`);
+      }
 
-      byId('farmRemainingXP').textContent = formatNumber(remainingXP);
-      byId('xpPerCycleResult').textContent = formatNumber(xpPerPlot);
-      byId('plotsNeeded').textContent = formatNumber(plotsNeeded);
-      byId('cyclesNeeded').textContent = formatNumber(cyclesNeeded);
-      byId('seedsNeeded').textContent = formatNumber(seedsNeeded);
-      byId('growthTimeResult').textContent = `${crop.growthTime} min`;
+      if (crop.xpPerCycle == null) {
+        setMessage(messageEl, `${crop.crop} is missing one or more XP values in the dataset, so the calculator cannot produce a reliable total for it yet.`);
+        byId('farmRemainingXpResult').textContent = formatNumber(Math.max(0, targetRow.totalXP - startRow.totalXP - currentWithin));
+        byId('farmCycleXpResult').textContent = 'Missing';
+        byId('farmPlotsNeededResult').textContent = 'Missing';
+        byId('farmRunsNeededResult').textContent = 'Missing';
+        byId('farmSeedsNeededResult').textContent = 'Missing';
+        byId('farmGrowthTimeResult').textContent = crop.growthTime || 'Not listed';
+        updateSelectedCropDetails();
+        return;
+      }
 
-      updateCropDetails();
+      const required = Math.max(0, targetRow.totalXP - startRow.totalXP);
+      const remaining = Math.max(0, required - currentWithin);
+      const plotsNeeded = Math.ceil(remaining / crop.xpPerCycle);
+      const runsNeeded = Math.ceil(plotsNeeded / plotsPerRun);
+      const seedsNeeded = plotsNeeded * safeNumber(crop.seedsToPlant, 1);
+
+      byId('farmRemainingXpResult').textContent = formatNumber(remaining);
+      byId('farmCycleXpResult').textContent = formatNumber(crop.xpPerCycle);
+      byId('farmPlotsNeededResult').textContent = formatNumber(plotsNeeded);
+      byId('farmRunsNeededResult').textContent = formatNumber(runsNeeded);
+      byId('farmSeedsNeededResult').textContent = formatNumber(seedsNeeded);
+      byId('farmGrowthTimeResult').textContent = crop.growthTime || 'Not listed';
+      updateSelectedCropDetails();
     }
 
-    function resetFarmingForm() {
-      byId('farmCurrentLevel').value = 1;
+    function resetFarming() {
+      byId('farmStartLevel').value = 1;
       byId('farmTargetLevel').value = 10;
-      byId('farmCurrentXP').value = 0;
-      byId('plotCount').value = 1;
-      byId('sortMode').value = 'level';
-      populateCropOptions();
-      byId('farmWarning').style.display = 'none';
+      byId('farmCurrentWithinLevel').value = 0;
+      byId('farmPlotsPerRun').value = 1;
+      byId('farmSortMode').value = 'level';
+      updateCropSelect();
+      byId('farmCropSelect').selectedIndex = 0;
+      updateSelectedCropDetails();
       calculateFarming();
     }
 
-    byId('sortMode').addEventListener('change', populateCropOptions);
-    byId('cropSelect').addEventListener('change', () => {
-      updateCropDetails();
-      calculateFarming();
-    });
-    byId('calculateFarming').addEventListener('click', calculateFarming);
-    byId('resetFarming').addEventListener('click', resetFarmingForm);
+    function renderXPTable() {
+      const term = byId('xpSearch').value.trim().toLowerCase();
+      const rows = xpData.filter((row) => !term || String(row.level).includes(term));
+      byId('xpTableBody').innerHTML = rows.map((row) => `
+        <tr>
+          <td>${row.level}</td>
+          <td>${formatNumber(row.totalXP)}</td>
+          <td>${formatNumber(row.xpToNext)}</td>
+        </tr>
+      `).join('');
+    }
 
-    // INIT
-    populateCropOptions();
+    function renderFarmingTable() {
+      const search = byId('farmingSearch').value.trim().toLowerCase();
+      const patch = byId('farmingPatchFilter').value;
+      const rows = farmingData.filter((row) => {
+        const matchesSearch = !search || row.crop.toLowerCase().includes(search) || row.patchType.toLowerCase().includes(search);
+        const matchesPatch = patch === 'all' || row.patchType === patch;
+        return matchesSearch && matchesPatch;
+      });
+
+      byId('farmingTableBody').innerHTML = rows.map((row) => `
+        <tr>
+          <td>${row.patchType}</td>
+          <td>${row.crop}</td>
+          <td>${row.levelRequirement}</td>
+          <td>${row.seedsToPlant ?? '-'}</td>
+          <td>${row.plantXP ?? 'Missing'}</td>
+          <td>${row.harvestXP ?? 'Missing'}</td>
+          <td>${row.xpPerCycle ?? 'Missing'}</td>
+          <td>${row.growthTime || 'Not listed'}</td>
+        </tr>
+      `).join('');
+    }
+
+    function populatePatchFilter() {
+      const patchTypes = ['all', ...new Set(farmingData.map((row) => row.patchType))];
+      byId('farmingPatchFilter').innerHTML = patchTypes.map((type) => {
+        const label = type === 'all' ? 'All patch types' : type;
+        return `<option value="${type}">${label}</option>`;
+      }).join('');
+    }
+
+    function initStats() {
+      byId('xpStatLevels').textContent = formatNumber(xpData.length);
+      byId('xpStatCapXp').textContent = formatNumber(xpData[xpData.length - 1].totalXP);
+      byId('farmStatRecords').textContent = formatNumber(farmingData.length);
+      byId('farmStatPatchTypes').textContent = formatNumber(new Set(farmingData.map((row) => row.patchType)).size);
+      byId('farmStatMinLevel').textContent = formatNumber(Math.min(...farmingData.map((row) => row.levelRequirement)));
+      byId('farmStatMaxLevel').textContent = formatNumber(Math.max(...farmingData.map((row) => row.levelRequirement)));
+    }
+
+    function initTabs() {
+      document.querySelectorAll('.tab-button').forEach((button) => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.tab-button').forEach((b) => b.classList.remove('active'));
+          document.querySelectorAll('.tab-panel').forEach((panel) => panel.classList.remove('active'));
+          button.classList.add('active');
+          byId(button.dataset.tab).classList.add('active');
+        });
+      });
+    }
+
+    initTabs();
+    initStats();
+    populatePatchFilter();
+    updateCropSelect();
+    renderXPTable();
+    renderFarmingTable();
     calculateXP();
     calculateFarming();
+
+    byId('xpCalculateButton').addEventListener('click', calculateXP);
+    byId('xpResetButton').addEventListener('click', resetXP);
+    byId('farmCalculateButton').addEventListener('click', calculateFarming);
+    byId('farmResetButton').addEventListener('click', resetFarming);
+    byId('farmSortMode').addEventListener('change', () => {
+      updateCropSelect();
+      calculateFarming();
+    });
+    byId('farmCropSelect').addEventListener('change', () => {
+      updateSelectedCropDetails();
+      calculateFarming();
+    });
+    byId('xpSearch').addEventListener('input', renderXPTable);
+    byId('farmingSearch').addEventListener('input', renderFarmingTable);
+    byId('farmingPatchFilter').addEventListener('change', renderFarmingTable);
   </script>
 </body>
 </html>
