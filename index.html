@@ -320,15 +320,24 @@
     <section class="hero">
       <h1>Remote Realms Calculator</h1>
       <p>
-        Rebuilt using your actual Remote Realms XP and Farming datasets. This version removes the placeholder crops,
-        keeps your current assumptions visible, and adds dataset tabs so the calculator and the source tables live together.
+        This tool helps Remote Realms players plan farming progression, compare crop XP values, estimate seeds needed,
+        and map out leveling paths using community-tested data. Remote Realms is a browser-based RPG focused on skill
+        training, gathering, crafting, and long-term progression, and this calculator is designed to make farming and XP planning easier while you play.
       </p>
       <div class="pill-row">
-        <span class="pill">Uses your real XP data</span>
-        <span class="pill">Uses your real farming data</span>
-        <span class="pill">XP Data tab included</span>
-        <span class="pill">Farming Data tab included</span>
-        <span class="pill">No compost assumptions forced in</span>
+        <span class="pill">Plan farming XP runs</span>
+        <span class="pill">Compare crop XP values</span>
+        <span class="pill">Estimate seeds needed</span>
+        <span class="pill">Level progression calculator</span>
+        <span class="pill">Community-tested values</span>
+      </div>
+      <div class="controls" style="margin-top:16px;">
+        <a class="tab-button" href="https://remoterealms.com/downloads" target="_blank" rel="noopener noreferrer">Play Remote Realms</a>
+        <a class="tab-button" href="https://remote-realms.fandom.com/wiki/Getting_Started" target="_blank" rel="noopener noreferrer">Getting Started</a>
+        <a class="tab-button" href="https://hiscores.remoterealms.com/" target="_blank" rel="noopener noreferrer">Hiscores</a>
+        <a class="tab-button" href="https://discord.com/invite/jtNKEVtvwd" target="_blank" rel="noopener noreferrer">Discord</a>
+        <a class="tab-button" href="https://www.youtube.com/channel/UCgGZ9uD-VIdTJLeTqbZM7Kg" target="_blank" rel="noopener noreferrer">YouTube</a>
+        <a class="tab-button" href="https://biota.remoterealms.com/?v=home" target="_blank" rel="noopener noreferrer">Biota</a>
       </div>
     </section>
 
@@ -643,22 +652,37 @@
     <section id="data-notes-panel" class="tab-panel">
       <div class="grid">
         <article class="card">
-          <h2>Data Notes and Assumptions</h2>
-          <p>This page explains the boundaries of the current public version.</p>
+          <h2>Community Notes and Development Process</h2>
+          <p>This section documents how the calculator was developed alongside player feedback from the Remote Realms community. Rather than only listing raw dataset details, these notes capture how the tool evolved through testing and discussion.</p>
 
-          <h3>Current scope</h3>
+          <h3>Community testing</h3>
           <ul class="notice-list">
-            <li>Includes your full XP progression dataset for levels 1–99.</li>
-            <li>Includes your real farming crop table, patch types, seeds to plant, plant XP, harvest XP, and XP per cycle.</li>
-            <li>Uses your spreadsheet assumption that XP per cycle combines plant XP and harvest XP.</li>
-            <li>Does not force compost into the tool while that mechanic is still under active community investigation.</li>
+            <li>The calculator began as a spreadsheet used to test farming XP progression and crop efficiency.</li>
+            <li>Players reviewed early calculations and helped confirm values such as plant XP, harvest XP, and seeds required.</li>
+            <li>Several iterations of the calculator were shared so players could test whether the outputs matched their in‑game experience.</li>
+            <li>Feedback from testers helped identify confusing inputs, missing crops, and areas where the layout needed to be clearer.</li>
           </ul>
 
-          <h3>Recommended next development steps</h3>
+          <h3>Design decisions</h3>
           <ul class="notice-list">
-            <li>Move the embedded datasets into separate <code>.json</code> files later for easier maintenance.</li>
-            <li>Add a small changelog so you can mark when game updates alter numbers.</li>
-            <li>Keep usernames and direct participant identifiers out of the public site unless you have permission.</li>
+            <li>The site keeps the calculator simple so players can quickly estimate farming progression during gameplay.</li>
+            <li>Crop sorting by level was added because players typically choose crops based on their current farming level.</li>
+            <li>Seed estimates and run calculations were added after players requested a clearer way to plan farming runs.</li>
+            <li>Dataset tables were included as separate tabs so players can view the underlying values used by the calculator.</li>
+          </ul>
+
+          <h3>Current limitations</h3>
+          <ul class="notice-list">
+            <li>Some crops still have incomplete XP values while testing continues.</li>
+            <li>Compost and other modifiers are intentionally excluded until consistent values can be verified.</li>
+            <li>The calculator focuses on planning estimates rather than exact simulation of all in‑game mechanics.</li>
+          </ul>
+
+          <h3>Ongoing development</h3>
+          <ul class="notice-list">
+            <li>The tool will continue to evolve as players test new mechanics and provide additional feedback.</li>
+            <li>Future updates may separate datasets into external files to make updates easier when the game changes.</li>
+            <li>As more values are confirmed, the calculator can expand to include additional farming mechanics.</li>
           </ul>
         </article>
       </div>
