@@ -430,4 +430,97 @@
     <section id="farming-calculator-panel" class="tab-panel">
       <div class="grid">
         <article class="card half">
-          <h2>Farming Ca
+          <h2>Farming Calculator</h2>
+          <p>Choose whether you want to enter your farming level or your total farming XP. The calculator can work with either method.</p>
+
+          <div class="mode-group" aria-label="Farming input mode">
+            <label class="radio-label"><input type="radio" name="farmInputMode" value="level" checked /> Use farming level</label>
+            <label class="radio-label"><input type="radio" name="farmInputMode" value="xp" /> Use farming XP</label>
+          </div>
+
+          <div class="field-grid">
+            <div class="field" id="farmLevelField">
+              <label for="farmCurrentLevel">Current Farming Level</label>
+              <select id="farmCurrentLevel"></select>
+            </div>
+            <div class="field hidden" id="farmTotalField">
+              <label for="farmCurrentTotalXP">Current Total Farming XP</label>
+              <input id="farmCurrentTotalXP" type="number" min="0" value="0" />
+            </div>
+            <div class="field">
+              <label for="farmTargetLevel">Target Farming Level</label>
+              <select id="farmTargetLevel"></select>
+            </div>
+            <div class="field">
+              <label for="farmPlotsPerRun">Plots Per Farming Run</label>
+              <input id="farmPlotsPerRun" type="number" min="1" value="1" />
+            </div>
+            <div class="field">
+              <label for="farmSortMode">Crop Sort</label>
+              <select id="farmSortMode">
+                <option value="level">Level unlock</option>
+                <option value="alpha-asc">A to Z</option>
+                <option value="alpha-desc">Z to A</option>
+                <option value="patch">Patch type then level</option>
+                <option value="xp-desc">Highest XP per cycle</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="farmCropSelect">Crop</label>
+              <select id="farmCropSelect"></select>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button class="action" id="farmCalculateButton">Calculate Farming</button>
+            <button class="secondary" id="farmResetButton" type="button">Reset</button>
+          </div>
+
+          <div id="farmMessage" class="message" role="alert"></div>
+
+          <div class="results" aria-live="polite">
+            <div class="result-box"><span class="result-label">Current Farming Level</span><div id="farmDetectedLevelResult" class="result-value">1</div></div>
+            <div class="result-box"><span class="result-label">Current Total Farming XP</span><div id="farmCurrentTotalResult" class="result-value">0</div></div>
+            <div class="result-box"><span class="result-label">XP Remaining</span><div id="farmRemainingXpResult" class="result-value">0</div></div>
+            <div class="result-box"><span class="result-label">Baseline XP Per Plot / Cycle</span><div id="farmCycleXpResult" class="result-value">0</div></div>
+            <div class="result-box"><span class="result-label">Estimated Plots Needed</span><div id="farmPlotsNeededResult" class="result-value">0</div></div>
+            <div class="result-box"><span class="result-label">Estimated Runs Needed</span><div id="farmRunsNeededResult" class="result-value">0</div></div>
+            <div class="result-box"><span class="result-label">Estimated Seeds Needed</span><div id="farmSeedsNeededResult" class="result-value">0</div></div>
+            <div class="result-box"><span class="result-label">Harvest Assumption</span><div id="farmHarvestAssumptionResult" class="result-value" style="font-size:1rem;">Plant XP + Harvest XP</div></div>
+          </div>
+
+          <p class="small" style="margin-top: 14px;"><strong>Baseline formula:</strong> <code>XP per plot / cycle = Plant XP + Harvest XP</code>. These results are conservative low-end planning estimates and do not include compost or other mechanics still under testing.</p>
+        </article>
+
+        <article class="card half">
+          <h2>Selected Crop Details</h2>
+          <table>
+            <thead><tr><th>Field</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Crop</td><td id="detailCrop">-</td></tr>
+              <tr><td>Patch Type</td><td id="detailPatchType">-</td></tr>
+              <tr><td>Level Requirement</td><td id="detailLevelRequirement">-</td></tr>
+              <tr><td>Seeds to Plant</td><td id="detailSeedsToPlant">-</td></tr>
+              <tr><td>Plant XP</td><td id="detailPlantXP">-</td></tr>
+              <tr><td>Harvest XP</td><td id="detailHarvestXP">-</td></tr>
+              <tr><td>Baseline XP Per Plot / Cycle</td><td id="detailCycleXP">-</td></tr>
+              <tr><td>Harvest Assumption</td><td id="detailHarvestAssumption">Plant XP + Harvest XP</td></tr>
+              <tr><td>Growth Time</td><td id="detailGrowthTime">-</td></tr>
+            </tbody>
+          </table>
+          <div class="success-box">Compost is still intentionally excluded. It can be added later once the values are stable enough to model confidently.</div>
+          <div class="stats-row">
+            <div class="stat"><span class="label">Farming records</span><div class="value" id="farmStatRecords">28</div></div>
+            <div class="stat"><span class="label">Patch types</span><div class="value" id="farmStatPatchTypes">5</div></div>
+            <div class="stat"><span class="label">Lowest crop level</span><div class="value" id="farmStatMinLevel">1</div></div>
+            <div class="stat"><span class="label">Highest crop level</span><div class="value" id="farmStatMaxLevel">71</div></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="xp-data-panel" class="tab-panel">
+      <div class="grid">
+        <article class="card">
+          <h2>XP Data Table</h2>
+          <
