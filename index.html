@@ -17,6 +17,7 @@
     }
 
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
@@ -27,39 +28,406 @@
         linear-gradient(180deg, var(--bg) 0%, #07101f 100%);
       line-height: 1.5;
     }
-    .container { width: min(1220px, calc(100% - 32px)); margin: 24px auto 48px; }
-    .hero, .card { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; box-shadow: var(--shadow); }
-    .hero { padding: 24px; margin-bottom: 24px; }
+
+    .container {
+      width: min(1220px, calc(100% - 32px));
+      margin: 24px auto 48px;
+    }
+
+    .hero, .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
     h1, h2, h3 { margin: 0 0 12px; }
     h1 { font-size: clamp(1.8rem, 3vw, 3rem); }
     h2 { font-size: 1.6rem; }
     h3 { font-size: 1.05rem; }
     p { margin: 0 0 12px; color: var(--muted); }
     .small { font-size: 0.92rem; color: var(--muted); }
-    .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+    .pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
     .pill {
-      display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px;
-      background: var(--accent-soft); border: 1px solid rgba(139, 92, 246, 0.32);
-      color: #ddd6fe; font-size: 0.86rem; font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(139, 92, 246, 0.32);
+      color: #ddd6fe;
+      font-size: 0.86rem;
+      font-weight: 700;
     }
-    .tabs { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 24px; }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 0 0 24px;
+    }
+
     .tab-button {
-      border: 1px solid var(--border); background: rgba(55, 65, 81, 0.35); color: var(--text);
-      padding: 12px 18px; border-radius: 999px; font-weight: 700; cursor: pointer; transition: 0.2s ease;
-      text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border);
+      background: rgba(55, 65, 81, 0.35);
+      color: var(--text);
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
+
     .tab-button:hover { transform: translateY(-1px); }
-    .tab-button.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.18); }
+
+    .tab-button.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.18);
+    }
+
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
-    .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 18px; }
-    .card { grid-column: span 12; padding: 22px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      grid-column: span 12;
+      padding: 22px;
+    }
+
     .half { grid-column: span 6; }
-    .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 14px; }
-    .field { display: flex; flex-direction: column; gap: 8px; }
-    .mode-group { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; }
-    .radio-label { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; color: var(--text); }
-    label { font-weight: 700; color: var(--text); }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mode-group {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .radio-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    label {
+      font-weight: 700;
+      color: var(--text);
+    }
+
     input, select {
-      width: 100%; border-radius: 14px; border: 1px solid var(--border); background: rgba(3, 12, 28, 0.94);
-      color: var(--text); padding: 13px 14px; font-size: 1rem;
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(3, 12, 28, 0.94);
+      color: var(--text);
+      padding: 13px 14px;
+      font-size: 1rem;
+    }
+
+    input:focus, select:focus, button:focus, a:focus {
+      outline: 3px solid rgba(139, 92, 246, 0.22);
+      outline-offset: 2px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    button.action {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      background: var(--accent);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 16px;
+      background: rgba(55, 65, 81, 0.35);
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .results {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .result-box {
+      border: 1px solid var(--border);
+      background: rgba(3, 12, 28, 0.94);
+      border-radius: 18px;
+      padding: 14px;
+      min-height: 96px;
+    }
+
+    .result-label {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .result-value {
+      font-size: clamp(1.1rem, 2vw, 1.9rem);
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .message {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      background: rgba(127, 29, 29, 0.25);
+      color: #fecaca;
+    }
+
+    .message.visible { display: block; }
+
+    .success-box {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      background: rgba(21, 128, 61, 0.14);
+      color: #d1fae5;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      table-layout: fixed;
+    }
+
+    th, td {
+      padding: 11px 10px;
+      border: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+      overflow-wrap: anywhere;
+    }
+
+    th {
+      background: rgba(15, 28, 53, 0.92);
+      color: var(--text);
+    }
+
+    tbody tr:nth-child(odd) { background: rgba(255, 255, 255, 0.02); }
+
+    .table-controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      align-items: end;
+    }
+
+    .table-controls .field { min-width: 180px; flex: 1; }
+
+    .scroll-table {
+      overflow-x: auto;
+      margin-top: 14px;
+      border-radius: 18px;
+    }
+
+    .notice-list {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .notice-list li { margin-bottom: 8px; }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(3, 12, 28, 0.94);
+      padding: 14px;
+    }
+
+    .stat .label {
+      color: var(--muted);
+      font-size: 0.9rem;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .stat .value {
+      font-size: 1.45rem;
+      font-weight: 700;
+    }
+
+    .hidden { display: none !important; }
+
+    code {
+      background: rgba(255,255,255,0.06);
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #e9d5ff;
+    }
+
+    @media (max-width: 980px) {
+      .half { grid-column: span 12; }
+      .field-grid, .results, .stats-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <h1>Remote Realms Calculator</h1>
+      <p>
+        This tool helps Remote Realms players plan farming progression, compare crop XP values, estimate seeds needed,
+        and map out leveling paths using community-tested data. Remote Realms is a browser-based RPG focused on skill
+        training, gathering, crafting, and long-term progression, and this calculator is designed to make farming and XP planning easier while you play.
+      </p>
+      <div class="pill-row">
+        <span class="pill">Plan farming XP runs</span>
+        <span class="pill">Compare crop XP values</span>
+        <span class="pill">Estimate seeds needed</span>
+        <span class="pill">Level progression calculator</span>
+        <span class="pill">Community-tested values</span>
+      </div>
+      <div class="controls" style="margin-top:16px;">
+        <a class="tab-button" href="https://remoterealms.com/downloads" target="_blank" rel="noopener noreferrer">Play Remote Realms</a>
+        <a class="tab-button" href="https://remote-realms.fandom.com/wiki/Getting_Started" target="_blank" rel="noopener noreferrer">Getting Started</a>
+        <a class="tab-button" href="https://hiscores.remoterealms.com/" target="_blank" rel="noopener noreferrer">Hiscores</a>
+        <a class="tab-button" href="https://discord.com/invite/jtNKEVtvwd" target="_blank" rel="noopener noreferrer">Discord</a>
+        <a class="tab-button" href="https://www.youtube.com/channel/UCgGZ9uD-VIdTJLeTqbZM7Kg" target="_blank" rel="noopener noreferrer">YouTube</a>
+        <a class="tab-button" href="https://biota.remoterealms.com/?v=home" target="_blank" rel="noopener noreferrer">Biota</a>
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="Main sections">
+      <button class="tab-button active" data-tab="xp-calculator-panel">XP Calculator</button>
+      <button class="tab-button" data-tab="farming-calculator-panel">Farming Calculator</button>
+      <button class="tab-button" data-tab="xp-data-panel">XP Data</button>
+      <button class="tab-button" data-tab="farming-data-panel">Farming Data</button>
+      <button class="tab-button" data-tab="data-notes-panel">Project Notes</button>
+      <button class="tab-button" data-tab="feedback-panel">Feedback</button>
+    </nav>
+
+    <section id="xp-calculator-panel" class="tab-panel active">
+      <div class="grid">
+        <article class="card half">
+          <h2>XP Calculator</h2>
+          <p>Choose whether you want to enter your current level or your total XP. The calculator can work with either method.</p>
+
+          <div class="mode-group" aria-label="XP input mode">
+            <label class="radio-label"><input type="radio" name="xpInputMode" value="level" checked /> Use current level</label>
+            <label class="radio-label"><input type="radio" name="xpInputMode" value="xp" /> Use total XP</label>
+          </div>
+
+          <div class="field-grid">
+            <div class="field" id="xpLevelField">
+              <label for="xpCurrentLevel">Current Level</label>
+              <select id="xpCurrentLevel"></select>
+            </div>
+            <div class="field hidden" id="xpTotalField">
+              <label for="xpCurrentTotal">Current Total XP</label>
+              <input id="xpCurrentTotal" type="number" min="0" value="0" />
+            </div>
+            <div class="field">
+              <label for="xpTargetLevel">Target Level</label>
+              <select id="xpTargetLevel"></select>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button class="action" id="xpCalculateButton">Calculate XP</button>
+            <button class="secondary" id="xpResetButton" type="button">Reset</button>
+          </div>
+
+          <div id="xpMessage" class="message" role="alert"></div>
+
+          <div class="results" aria-live="polite">
+            <div class="result-box"><span class="result-label">Current Level</span><div id="xpDetectedLevelResult" class="result-value">1</div></div>
+            <div class="result-box"><span class="result-label">Current Total XP</span><div id="xpCurrentTotalResult" class="result-value">0</div></div>
+            <div class="result-box"><span class="result-label">Target Level Total XP</span><div id="xpTargetTotalResult" class="result-value">0</div></div>
+            <div class="result-box"><span class="result-label">Remaining XP</span><div id="xpRemainingResult" class="result-value">0</div></div>
+          </div>
+
+          <p class="small" style="margin-top: 14px;">Remaining XP is calculated as <code>target level total XP - current total XP</code>. If you choose level mode, the calculator uses the baseline XP value for that level.</p>
+        </article>
+
+        <article class="card half">
+          <h2>XP Formula Notes</h2>
+          <table>
+            <thead><tr><th>Item</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td>Use current level</td><td>The calculator looks up the baseline cumulative XP for the selected level.</td></tr>
+              <tr><td>Use total XP</td><td>The calculator detects your current level automatically from the XP table.</td></tr>
+              <tr><td>Remaining XP</td><td><code>target level total XP - current total XP</code>, never below zero.</td></tr>
+            </tbody>
+          </table>
+          <div class="success-box">This version supports both player workflows: entering a known level or entering total XP directly.</div>
+          <div class="stats-row">
+            <div class="stat"><span class="label">Levels in dataset</span><div class="value" id="xpStatLevels">99</div></div>
+            <div class="stat"><span class="label">Level cap</span><div class="value">99</div></div>
+            <div class="stat"><span class="label">First level total XP</span><div class="value">0</div></div>
+            <div class="stat"><span class="label">Level 99 total XP</span><div class="value" id="xpStatCapXp">15,233,507</div></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="farming-calculator-panel" class="tab-panel">
+      <div class="grid">
+        <article class="card half">
+          <h2>Farming Ca
