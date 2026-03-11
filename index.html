@@ -383,7 +383,7 @@
               <div id="xpIntoLevelResult" class="result-value">0</div>
             </div>
           </div>
-          <p class="small" style="margin-top: 14px;">Enter your current <strong>total XP</strong> and the calculator will determine your current level automatically using the XP table.</p>
+          <p class="small" style="margin-top: 14px;">Enter your current <strong>total XP</strong> and the calculator will determine your current level automatically using the XP table. Remaining XP is calculated as <code>target level total XP - current total XP</code>.</p>
         </article>
 
         <article class="card half">
@@ -458,7 +458,7 @@
             <div class="result-box"><span class="result-label">Growth Time</span><div id="farmGrowthTimeResult" class="result-value">-</div></div>
             <div class="result-box"><span class="result-label">Harvest Assumption</span><div id="farmHarvestAssumptionResult" class="result-value" style="font-size:1rem;">Plant XP + Harvest XP</div></div>
           </div>
-          <p class="small" style="margin-top: 14px;"><strong>Current assumption:</strong> <code>XP per plot / cycle = Plant XP + Harvest XP</code>. This version does not include compost or other mechanics still under testing.</p>
+          <p class="small" style="margin-top: 14px;"><strong>Baseline formula:</strong> <code>XP per plot / cycle = Plant XP + Harvest XP</code>. These results are conservative low-end planning estimates and do not include compost or other mechanics still under testing.</p>
         </article>
 
         <article class="card half">
@@ -492,7 +492,7 @@
       <div class="grid">
         <article class="card">
           <h2>XP Data Table</h2>
-          <p>Browse the full Remote Realms XP progression table used by the calculator.</p>
+          <p>Browse the full Remote Realms XP progression table used by the calculator. You can search the table by level below.</p>
           <div class="table-controls"><div class="field"><label for="xpSearch">Search by Level</label><input id="xpSearch" type="text" placeholder="Example: 50" /></div></div>
           <div class="scroll-table">
             <table>
@@ -508,7 +508,7 @@
       <div class="grid">
         <article class="card">
           <h2>Farming Data Table</h2>
-          <p>Browse the crop records powering the farming calculator.</p>
+          <p>Browse the crop records powering the farming calculator. You can search crops and filter by patch type below.</p>
           <div class="table-controls">
             <div class="field"><label for="farmingSearch">Search Crops</label><input id="farmingSearch" type="text" placeholder="Example: tomato" /></div>
             <div class="field"><label for="farmingPatchFilter">Filter by Patch Type</label><select id="farmingPatchFilter"></select></div>
@@ -545,9 +545,18 @@
           <h3>Current limitations</h3>
           <ul class="notice-list">
             <li>Some crops still have incomplete XP values while testing continues.</li>
-            <li>Compost and other modifiers are intentionally excluded until consistent values can be verified.</li>
-            <li>The calculator is built for planning and comparison, not full simulation of every farming mechanic.</li>
+            <li>The calculator provides conservative baseline XP estimates using plant XP and harvest XP only.</li>
+            <li>Results should be interpreted as low-end planning values rather than maximum possible yields.</li>
           </ul>
+
+          <h3>Compost mechanics (not yet modeled)</h3>
+          <ul class="notice-list">
+            <li>Compost can significantly increase crop yields depending on compost level, compost bin type, and items used to create the compost.</li>
+            <li>Community testing suggests high compost levels can greatly increase harvest output, but values vary too widely to model consistently.</li>
+            <li>Because compost outcomes are still being tested and verified, compost modifiers are intentionally excluded from the calculator formulas.</li>
+            <li>The current calculator therefore reflects baseline farming XP using plant XP and harvest XP only.</li>
+          </ul>
+
           <h3>Ongoing development</h3>
           <ul class="notice-list">
             <li>The tool will continue to evolve as players test new mechanics and provide feedback.</li>
